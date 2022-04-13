@@ -19,9 +19,11 @@ function love.update(delta)
 
         ui:label("Hoop Radius: "..constants['hoopRadius'])
         constants['hoopRadius'] = ui:slider(0, constants['hoopRadius'], love.graphics.getHeight() / 2, 1)
-
-        ui:label("Hoop Resolution: "..constants['hoopResolution'])
-        constants['hoopResolution'] = ui:slider(2, constants['hoopResolution'], 128,1)
+        constants['hoopResolution'] = ui:property('Nails', 2, constants['hoopResolution'], 128, 1, 1)
+        local c = constants['hoopResolution']
+        c = (constants['nailWidth'] > 0 and 4 or 1) * (c * (c-1)) / 2
+        ui:label("Expected Strings: ".. c)
+        ui:label("Actual Strings: ".. strings, 'wrap', strings == c and '#FFFFFF' or '#FF0000')
     end
     ui:windowEnd()
     ui:frameEnd()
