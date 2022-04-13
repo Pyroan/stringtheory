@@ -34,7 +34,7 @@ function drawNails(nailRadius)
 end
 
 function drawStrings(nailRadius)
-    love.graphics.setColor(1, 0, 0, 1)
+    love.graphics.setColor(HSL(angle/(2*math.pi),1,0.5,1))
     for step = 0, #nails / 2 - 1 do
         local n = 1
         local next = 2
