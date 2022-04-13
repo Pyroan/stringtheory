@@ -1,18 +1,21 @@
 require("util")
 
-function initHoop(nailResolution, hoopRadius, nailRadius)
-    initNails(nailResolution, hoopRadius, nailRadius)
+function initHoop(nailResolution, hoopRadius, nailRadius, angle)
+    angle = angle or 0
+    initNails(nailResolution, hoopRadius, nailRadius, angle)
 end
 
 function drawHoop(nailRadius)
     drawNails(nailRadius)
-    drawStrings()
+    drawStrings(nailRadius)
 end
 
 nails = {}
-function initNails(resolution, hoopRadius, nailRadius)
+function initNails(resolution, hoopRadius, nailRadius, angle)
+    angle = angle or 0
+    nails = {}
     for i = 1, resolution do
-        local theta = i * 2 * math.pi / resolution
+        local theta = i * 2 * math.pi / resolution + angle
         nails[i] = {
             x = (hoopRadius + nailRadius) * math.cos(theta) + love.graphics.getWidth() / 2,
             y = (hoopRadius + nailRadius) * math.sin(theta) + love.graphics.getHeight() / 2
@@ -23,25 +26,32 @@ end
 -- TODO draw this to canvas to save draw calls
 function drawNails(nailRadius)
     for i = 1, #nails do
+        love.graphics.setColor(1,1,1,1)
         love.graphics.circle("fill", nails[i].x, nails[i].y, nailRadius)
+        love.graphics.setColor(0,0,0,1)
+        love.graphics.print(i, nails[i].x, nails[i].y)
     end
 end
 
-function drawStrings()
+function drawStrings(nailRadius)
+    love.graphics.setColor(1, 0, 0, 1)
+    local n = 1
+    local next = 2
+    -- "right" outer tangent...?
+    local phi = math.atan2(nails[n].y - nails[next].y, nails[n].x - nails[next].x)
+    local theta = phi + (math.pi / 2)
+    local x1 = nails[n].x + math.cos(theta) * nailRadius
+    local x2 = nails[next].x + math.cos(theta) * nailRadius
+    local y1 = nails[n].y + math.sin(theta) * nailRadius
+    local y2 = nails[next].y + math.sin(theta) * nailRadius
+    love.graphics.line(x1, y1, x2, y2)
+    -- "left" outer tangent...
+    love.graphics.setColor(0,0,1,1)
+    x1 = nails[n].x - math.cos(theta) * nailRadius
+    x2 = nails[next].x - math.cos(theta) * nailRadius
+    y1 = nails[n].y - math.sin(theta) * nailRadius
+    y2 = nails[next].y - math.sin(theta) * nailRadius
+    love.graphics.line(x1,y1,x2,y2)
 
-    step = #nails / 4 
-    -- for step = 0, #nails / 2 - 1 do
-        local i = 1
-        local n = 1
-        local next = nil
-        while next ~= 1 do
-            -- just an example using the centers of nails and not tangents
-            love.graphics.setColor(HSL(i/#nails, 1,0.5,1))
-            next = (n + step) % #nails + 1
-            love.graphics.line(nails[n].x, nails[n].y, nails[next].x, nails[next].y)
-            i = i + 1
-            n = next
-        end
-    -- end
     love.graphics.setColor(1, 1, 1, 1)
 end
