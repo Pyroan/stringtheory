@@ -5,10 +5,10 @@ function String:new(o, sourceNode, destNode, type, active)
     setmetatable(o, self)
     self.__index = self
 
-    self.type = type or 1
-    self.sourceNode = sourceNode
-    self.destNode = destNode
-    self.active = active or true
+    o.type = type or 1
+    o.sourceNode = sourceNode
+    o.destNode = destNode
+    o.active = active or true
     return o
 end
 function String:draw(nailRadius)
@@ -52,6 +52,5 @@ function String:draw(nailRadius)
         y2 = yDelta - yOffset + source.y
     end
     love.graphics.line(x1, y1, x2, y2)
-    stringCount = stringCount + 1
 end
 
