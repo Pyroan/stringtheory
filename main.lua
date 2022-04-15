@@ -38,7 +38,7 @@ function love.update(delta)
             c = (globals['nailWidth'] > 0 and 4 or 1) * (c * (c - 1)) / 2
         end
         ui:label("Expected Strings: " .. c)
-        ui:label("Actual Strings: " .. strings, 'wrap', strings == c and '#FFFFFF' or '#FF0000')
+        ui:label("Actual Strings: " .. stringCount, 'wrap', stringCount == c and '#FFFFFF' or '#FF0000')
     end
     ui:windowEnd()
     ui:frameEnd()
