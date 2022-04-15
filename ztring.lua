@@ -53,4 +53,3 @@ function String:draw(nailRadius)
     end
     love.graphics.line(x1, y1, x2, y2)
 end
-

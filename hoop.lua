@@ -56,11 +56,18 @@ function drawStrings(nailRadius)
     love.graphics.setColor(HSL(angle / (2 * math.pi), 1, 0.5, 1))
     for s = 1, #strings do
         if not globals['doIsolateStep'] or
-            (globals['isolateStep'] + 1 == strings[s].destNode.id - strings[s].sourceNode.id or globals['isolateStep'] +1 ==
-                strings[s].sourceNode.id+#nails - strings[s].destNode.id) then
+            getStringStep(strings[s]) == globals['isolateStep'] + 1 then
             strings[s]:draw(nailRadius)
             stringCount = stringCount + 1
         end
     end
     love.graphics.setColor(1, 1, 1, 1)
+end
+
+function getStringStep(string)
+    local s = string.destNode.id - string.sourceNode.id
+    if s > #nails / 2 then
+        s = string.sourceNode.id + #nails - string.destNode.id
+    end
+    return s
 end
