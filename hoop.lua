@@ -4,7 +4,7 @@ require "util"
 function initHoop(nailResolution, hoopRadius, nailRadius, angle)
     angle = angle or 0
     nails = initNails(nailResolution, hoopRadius, nailRadius, angle)
-    strings = initStrings(nails)
+    strings = initStrings()
 end
 
 function drawHoop(nailRadius)
@@ -38,37 +38,29 @@ end
 
 stringCount = 0
 
-function initStrings(nails)
+function initStrings()
     local strings = {}
+    for i = 1, #nails do
+        for j = i + 1, #nails do
+            for k = 1, 4 do
+                local s = String:new({}, nails[i], nails[j], k)
+                strings[#strings + 1] = s
+            end
+        end
+    end
     return strings
 end
 
 function drawStrings(nailRadius)
     stringCount = 0
     love.graphics.setColor(HSL(angle / (2 * math.pi), 1, 0.5, 1))
-    if globals['doIsolateStep'] then
-        drawStringStep(globals['isolateStep'], nailRadius)
-    else
-        for step = 0, #nails / 2 - 1 do
-            drawStringStep(step, nailRadius)
+    for s = 1, #strings do
+        if not globals['doIsolateStep'] or
+            (globals['isolateStep'] + 1 == strings[s].destNode.id - strings[s].sourceNode.id or globals['isolateStep'] +1 ==
+                strings[s].sourceNode.id+#nails - strings[s].destNode.id) then
+            strings[s]:draw(nailRadius)
+            stringCount = stringCount + 1
         end
     end
     love.graphics.setColor(1, 1, 1, 1)
-end
-
-function drawStringStep(step, nailRadius)
-    -- k has to be gcd actually
-    local k = gcd(#nails, step + 1)
-    for i = 1, k do
-        local n = i
-        local next = (n + step) % #nails + 1
-        while next ~= i and not (n == #nails / 2 + i and k == #nails / 2) do
-            next = (n + step) % #nails + 1
-            for i = 1, (nailRadius == 0 and 1 or 4) do
-                local s = String:new({}, nails[n], nails[next], i)
-                s:draw(nailRadius)
-            end
-            n = next
-        end
-    end
 end
