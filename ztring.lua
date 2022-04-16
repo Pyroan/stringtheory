@@ -11,7 +11,14 @@ function String:new(o, sourceNode, destNode, type, active)
     o.active = active or true
     return o
 end
+
+--- returns `true` if the string was actually drawn,
+--- `false` otherwise.
+---@return boolean
 function String:draw(nailRadius)
+    if nailRadius <= 0 and self.type ~= 1 then
+        return false
+    end
     local source = self.sourceNode
     local dest = self.destNode
     local x1, x2, y1, y2
@@ -52,4 +59,5 @@ function String:draw(nailRadius)
         y2 = yDelta - yOffset + source.y
     end
     love.graphics.line(x1, y1, x2, y2)
+    return true
 end

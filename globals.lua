@@ -1,6 +1,6 @@
 globals = {
     hoopRadius = 260,           -- inner radius of the circle defined by the nails
-    hoopResolution = 2,        -- number of nails
+    hoopResolution = 13,        -- number of nails
     nailWidth = 15,            -- radius of a nail body.
     evaluatorResolution = 500,  -- side length of grid used by evaluator function
     stringWidth = 0.05,         -- diameter of the string

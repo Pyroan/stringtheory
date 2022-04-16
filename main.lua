@@ -33,7 +33,7 @@ function love.update(delta)
             if globals['nailWidth'] > 0 then
                 c = c * 4
             end
-            ui:label("Cycles: " .. gcd(#nails, globals['isolateStep'] + 1))
+            ui:label("Cycles: " .. gcd(#nails, globals['isolateStep']))
         else
             c = (globals['nailWidth'] > 0 and 4 or 1) * (c * (c - 1)) / 2
         end
