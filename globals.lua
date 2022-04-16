@@ -6,7 +6,7 @@ globals = {
     stringWidth = 0.05,         -- diameter of the string
 
     doIsolateStep = false,
-    isolateStep = 0,
+    isolateStep = 1,
 
     iterationsPerTemp = 100, -- number of new states to check before decreasing the temperature
     initialTemp = 100

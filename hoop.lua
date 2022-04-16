@@ -1,12 +1,19 @@
 require "ztring"
 require "util"
 
+--- Initialize the "hoop" - the polygon of nails and strings that we're drawing.
+---@param nailResolution integer
+---@param hoopRadius integer
+---@param nailRadius integer
+---@param angle number
 function initHoop(nailResolution, hoopRadius, nailRadius, angle)
     angle = angle or 0
     nails = initNails(nailResolution, hoopRadius, nailRadius, angle)
     strings = initStrings()
 end
 
+--- Draw the hoop
+---@param nailRadius integer
 function drawHoop(nailRadius)
     drawNails(nailRadius)
     drawStrings(nailRadius)
@@ -55,8 +62,8 @@ function drawStrings(nailRadius)
     stringCount = 0
     love.graphics.setColor(HSL(angle / (2 * math.pi), 1, 0.5, 1))
     for s = 1, #strings do
-        if not globals['doIsolateStep'] or
-            getStringStep(strings[s]) == globals['isolateStep'] + 1 then
+        if not globals['doIsolateStep'] or getStringStep(strings[s]) == globals['isolateStep'] then
+            -- love.graphics.setColor(HSL(strings[s].type/5 -0.2, 1, 0.5, 1))
             strings[s]:draw(nailRadius)
             stringCount = stringCount + 1
         end
@@ -64,6 +71,8 @@ function drawStrings(nailRadius)
     love.graphics.setColor(1, 1, 1, 1)
 end
 
+--- return the minimum number of nails needed to get from `string`s source node to its destination node
+---@param string table
 function getStringStep(string)
     local s = string.destNode.id - string.sourceNode.id
     if s > #nails / 2 then
