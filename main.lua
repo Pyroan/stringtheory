@@ -24,12 +24,12 @@ function love.update(delta)
         globals['hoopResolution'] = ui:property('Nails', 2, globals['hoopResolution'], 128, 1, 1)
         globals['doIsolateStep'] = ui:checkbox("Isolate Step", globals['doIsolateStep'])
         if globals['doIsolateStep'] then
-            globals['isolateStep'] = ui:property("Step", 0, globals['isolateStep'],
-                math.floor(globals['hoopResolution'] / 2) - 1, 1, 1)
+            globals['isolateStep'] = ui:property("Step", 1, globals['isolateStep'],
+                math.floor(globals['hoopResolution'] / 2), 1, 1)
         end
         local c = globals['hoopResolution']
         if globals['doIsolateStep'] then
-            c = globals['isolateStep'] + 1 ~= #nails / 2 and #nails or #nails / 2
+            c = globals['isolateStep'] ~= #nails / 2 and #nails or #nails / 2
             if globals['nailWidth'] > 0 then
                 c = c * 4
             end
