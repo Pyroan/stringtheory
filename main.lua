@@ -8,7 +8,7 @@ function love.load()
     love.window.setMode(1280, 720)
     love.window.setTitle("Vi's String Theory")
     ui = nuklear.newUI()
-    initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'])
+    initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], 0)
 end
 
 angle = 0
@@ -16,17 +16,19 @@ function love.update(delta)
     ui:frameBegin()
     if ui:windowBegin('Settings', 0, 0, 180, love.graphics.getHeight(), 'border', 'movable', 'minimizable', 'title') then
         ui:layoutRow('dynamic', 35, 1)
+        -- nail/hoop params
         ui:label("Nail Radius: " .. globals['nailWidth'])
         globals['nailWidth'] = ui:slider(0, globals['nailWidth'], 100, 1)
-
         ui:label("Hoop Radius: " .. globals['hoopRadius'])
         globals['hoopRadius'] = ui:slider(0, globals['hoopRadius'], love.graphics.getHeight() / 2, 1)
         globals['hoopResolution'] = ui:property('Nails', 2, globals['hoopResolution'], 128, 1, 1)
+        -- isolated step
         globals['doIsolateStep'] = ui:checkbox("Isolate Step", globals['doIsolateStep'])
         if globals['doIsolateStep'] then
             globals['isolateStep'] = ui:property("Step", 1, globals['isolateStep'],
                 math.floor(globals['hoopResolution'] / 2), 1, 1)
         end
+        -- string counts/cycles
         local c = globals['hoopResolution']
         if globals['doIsolateStep'] then
             c = globals['isolateStep'] ~= #nails / 2 and #nails or #nails / 2
