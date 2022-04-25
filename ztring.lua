@@ -1,3 +1,5 @@
+---
+---@field active boolean
 String = {id, type, sourceNode, destNode, active}
 
 function String:new(o, sourceNode, destNode, type, active)
@@ -16,7 +18,7 @@ end
 --- `false` otherwise.
 ---@return boolean
 function String:draw(nailRadius)
-    if nailRadius <= 0 and self.type ~= 1 then
+    if (nailRadius <= 0 and self.type ~= 1) or not self.active then
         return false
     end
     local source = self.sourceNode

@@ -11,7 +11,11 @@ stringCount = 0
 function initHoop(nailResolution, hoopRadius, nailRadius, angle)
     angle = angle or 0
     nails = initNails(nailResolution, hoopRadius, nailRadius, angle)
-    stringState = StringState:new({}, nails)
+    if stringState == nil then
+        stringState = StringState:new({}, nails)
+    else 
+        stringState = stringState:neighbor()
+    end
 end
 
 --- Draw the hoop
@@ -38,9 +42,9 @@ end
 -- TODO draw this to canvas to save draw calls
 function drawNails(nailRadius)
     for i = 1, #nails do
-        love.graphics.setColor(1, 1, 1, 1)
-        love.graphics.circle("fill", nails[i].x, nails[i].y, nailRadius)
         love.graphics.setColor(0, 0, 0, 1)
+        love.graphics.circle("fill", nails[i].x, nails[i].y, nailRadius)
+        love.graphics.setColor(1, 1, 1, 1)
         -- love.graphics.print(i, nails[i].x, nails[i].y)
     end
 end
