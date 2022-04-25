@@ -7,11 +7,11 @@ local ui
 function love.load()
     love.window.setMode(1280, 720)
     love.window.setTitle("Vi's String Theory")
+    love.graphics.setBackgroundColor(1,1,1,1)
     ui = nuklear.newUI()
-    initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], 0)
+    initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'])
 end
 
-angle = 0
 function love.update(delta)
     ui:frameBegin()
     if ui:windowBegin('Settings', 0, 0, 180, love.graphics.getHeight(), 'border', 'movable', 'minimizable', 'title') then
@@ -44,11 +44,7 @@ function love.update(delta)
     end
     ui:windowEnd()
     ui:frameEnd()
-    angle = angle + ((1 / 60) * delta * math.pi)
-    if angle > 2 * math.pi then
-        angle = angle - 2 * math.pi
-    end
-    initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], angle)
+    initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'])
 end
 
 function love.draw()
