@@ -1,6 +1,7 @@
----
----@field active boolean
-String = {id, type, sourceNode, destNode, active}
+
+String = {id, type, sourceNode, destNode, 
+active
+}
 
 function String:new(o, sourceNode, destNode, type, active)
     o = o or {}
@@ -14,9 +15,10 @@ function String:new(o, sourceNode, destNode, type, active)
     return o
 end
 
---- returns `true` if the string was actually drawn,
---- `false` otherwise.
----@return boolean
+--- draws a tangent line between sourceNode and destNode with radius `nailRadius`.
+--- the specific line is based on `self.type`
+---@param nailRadius integer "the radius of the nail (in pixels)"
+---@return boolean "`true` if the string was actually drawn, `false` otherwise"
 function String:draw(nailRadius)
     if (nailRadius <= 0 and self.type ~= 1) or not self.active then
         return false
