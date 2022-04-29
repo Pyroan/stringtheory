@@ -7,9 +7,9 @@ local ui
 function love.load()
     love.window.setMode(1280, 720)
     love.window.setTitle("Vi's String Theory")
-    love.graphics.setBackgroundColor(1,1,1,1)
+    love.graphics.setBackgroundColor(love.math.colorFromBytes(131,59,142))
     ui = nuklear.newUI()
-    initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'])
+    initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'],0)
 end
 
 function love.update(delta)
@@ -44,7 +44,7 @@ function love.update(delta)
     end
     ui:windowEnd()
     ui:frameEnd()
-    initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'])
+    initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'],0)
 end
 
 function love.draw()
