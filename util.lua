@@ -4,7 +4,7 @@ function gcd(a, b)
         b = a % t
         a = t
     end
-	return a
+    return a
 end
 
 -- Converts HSL to RGB. (input and output range: 0 - 1)
@@ -30,4 +30,8 @@ function HSL(h, s, l, a)
         r, g, b = c, 0, x
     end
     return r + m, g + m, b + m, a
+end
+
+function slowDecrease(temp, beta)
+    return temp / (1 + beta * temp)
 end

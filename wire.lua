@@ -1,7 +1,4 @@
-
-String = {id, type, sourceNode, destNode, 
-active
-}
+String = {id, type, sourceNode, destNode, active}
 
 function String:new(o, sourceNode, destNode, type, active)
     o = o or {}

@@ -1,9 +1,7 @@
-require "ztring"
+require "wire"
 
 ---@field strings table
-StringState = {
-    nodes,
-    strings}
+StringState = {nodes, strings}
 
 --- Generates a new state with all strings' `active` set to true
 ---@param nodes table
@@ -14,7 +12,7 @@ function StringState:new(o, nodes)
     self.__index = self
     o.strings = {}
     for i = 1, #nodes do
-        for j = i+1, #nodes do
+        for j = i + 1, #nodes do
             for k = 1, 4 do
                 local s = String:new({}, nodes[i], nodes[j], k, true)
                 o.strings[#o.strings + 1] = s
@@ -58,7 +56,7 @@ end
 function StringState:draw(nailRadius)
     local stringCount = 0
     -- love.graphics.setColor(HSL(angle / (2 * math.pi), 1, 0.5, 1))
-    love.graphics.setColor(0,0,0,0.4)
+    love.graphics.setColor(0, 0, 0, 0.4)
     for s = 1, #self.strings do
         if not globals['doIsolateStep'] or getStringStep(self.strings[s], #self.nodes) == globals['isolateStep'] then
             -- love.graphics.setColor(HSL(strings[s].type/5 -0.2, 1, 0.5, 1))
@@ -67,7 +65,7 @@ function StringState:draw(nailRadius)
             end
         end
     end
-    love.graphics.setColor(0,0,0, 1)
+    love.graphics.setColor(0, 0, 0, 1)
     return stringCount
 end
 
