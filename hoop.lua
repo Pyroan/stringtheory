@@ -1,6 +1,6 @@
 require "stringstate"
 require "util"
-require "ztring"
+require "wire"
 
 stringCount = 0
 --- Initialize the "hoop" - the polygon of nails and strings that we're drawing.
@@ -13,7 +13,7 @@ function initHoop(nailResolution, hoopRadius, nailRadius, angle)
     nails = initNails(nailResolution, hoopRadius, nailRadius, angle)
     if stringState == nil then
         stringState = StringState:new({}, nails)
-    else 
+    else
         stringState = stringState:neighbor()
     end
 end
@@ -25,9 +25,10 @@ function drawHoop(nailRadius)
     stringCount = stringState:draw(nailRadius)
 end
 
+--- TODO `nails` should reallly be just part of stringState if i'm being honest 
 function initNails(resolution, hoopRadius, nailRadius, angle)
     angle = angle or 0
-    local nails = {}
+    local nails = stringState and stringState.nodes or {}
     for i = 1, resolution do
         local theta = i * 2 * math.pi / resolution + angle
         nails[i] = {
