@@ -62,12 +62,13 @@ function hoop.loadNails(resolution, hoopRadius, nailRadius, angle)
 end
 
 function hoop.drawNails(x, y, nailRadius, ppu, canvas)
+    oldColor = {love.graphics.getColor()}
+    love.graphics.setColor(0, 0, 0, 1)
     for i = 1, #hoop.nails do
-        love.graphics.setColor(0, 0, 0, 1)
         local x1, y1 = worldToScreenSpace(hoop.nails[i].x, hoop.nails[i].y, ppu, canvas)
         love.graphics.circle("fill", x1 + x, y1 + y, nailRadius / ppu)
-        love.graphics.setColor(1, 1, 1, 1)
         -- love.graphics.print(i, nails[i].x, nails[i].y)
     end
+    love.graphics.setColor(oldColor)
 end
 

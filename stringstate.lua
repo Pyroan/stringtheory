@@ -56,7 +56,6 @@ end
 function StringState:draw(x, y, nailRadius, ppu, canvas)
     local stringCount = 0
     -- love.graphics.setColor(HSL(angle / (2 * math.pi), 1, 0.5, 1))
-    love.graphics.setColor(0, 0, 0, 0.4)
     for s = 1, #self.strings do
         if not globals['doIsolateStep'] or getStringStep(self.strings[s], #self.nodes) == globals['isolateStep'] then
             -- love.graphics.setColor(HSL(strings[s].type/5 -0.2, 1, 0.5, 1))
