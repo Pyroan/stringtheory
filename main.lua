@@ -36,7 +36,8 @@ function love.load()
     -- the string canvas isn't actually drawn to the screen, but generated for the sake of our error evaluation.
     -- unfortunately this means that every string is drawn twice per frame.
     stringCanvas = love.graphics.newCanvas(globals['evaluatorResolution'], globals['evaluatorResolution'])
-    canvasPPU = math.min(stringCanvas:getDimensions()) / globals['hoopRadius']
+
+    canvasPPU = (2 * globals['hoopRadius']) / math.min(stringCanvas:getDimensions())
     print(string.format("Canvas PPU: %.3f", canvasPPU))
 
     evaluator.load(imData)
@@ -45,28 +46,43 @@ end
 function love.update(delta)
     ui.update(delta)
     hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], 0)
+
+    -- draw the hoop to the string canvas.
+    canvasPPU = (2 * globals['hoopRadius']) / math.min(stringCanvas:getDimensions())
+    love.graphics.setCanvas(stringCanvas)
+    love.graphics.clear(0, 0, 0, 1)
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.circle('fill', stringCanvas:getWidth() / 2, stringCanvas:getHeight() / 2, stringCanvas:getWidth() / 2)
+
+    love.graphics.setLineWidth(globals['stringWidth'] * canvasPPU)
+    love.graphics.setColor(0, 0, 0, 1)
+    hoop.draw(stringCanvas:getWidth() / 2, stringCanvas:getHeight() / 2, globals['nailWidth'], canvasPPU, stringCanvas)
+
+    -- reset anything we may have messed up.
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.setLineWidth(1)
+    love.graphics.setCanvas()
 end
 
 function love.draw()
     -- uncomment to force hoop to render as big as possible
     -- globals['ppu'] = (2 * globals['hoopRadius']) / math.min(love.graphics.getDimensions())
     love.graphics.setColor(1, 1, 1, globals['imageTransparency'])
-    -- align/scale image so that it's the same size as the hoop.
+    -- align/scale image so that it's the same size/location as the hoop.
     local imScaleFactor = 2 * globals['hoopRadius'] / im:getWidth()
     imScaleFactor = imScaleFactor / globals['ppu']
     local imX = (love.graphics.getWidth() - imScaleFactor * im:getWidth()) / 2
     local imY = (love.graphics.getHeight() - imScaleFactor * im:getHeight()) / 2
     love.graphics.draw(im, imX, imY, 0, imScaleFactor, imScaleFactor)
 
-    -- TODO draw thumbnails of the canvas, the target imagedata, and their difference.
-    -- hell maybe even a graph of the error if we're feeling sexy.
-    love.graphics.setColor(1, 1, 1, 1)
+    -- draw the main preview of the hoop
+    love.graphics.setColor(0, 0, 0, 0.4)
     hoop.draw(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, globals['nailWidth'], globals['ppu'])
     love.graphics.setColor(1, 1, 1, 1)
 
     ui.draw()
 
+    -- reset color 
     love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.setCanvas()
 end
 

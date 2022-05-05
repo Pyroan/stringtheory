@@ -11,7 +11,7 @@ globals = {
     imageTransparency = 0.2,
     imageName = "monalisa.bmp",
     evaluatorResolution = 500, -- side length of grid used by evaluator function
-    stringWidth = 0.05, -- diameter of the string in world units
+    stringWidth = 0.5, -- diameter of the string in world units. functionally limited by evaluator resolution.
 
     iterationsPerTemp = 100, -- number of new states to check before decreasing the temperature
     initialTemp = 100

@@ -45,8 +45,8 @@ function ui.update(delta)
     end
     nukeui:windowEnd()
 
-    if nukeui:windowBegin('Evaluator Preview', love.graphics.getWidth() - 180, 0, 180, love.graphics.getHeight(),
-        'border', 'movable', 'minimizable', 'title') then
+    if nukeui:windowBegin('Evaluator Preview', love.graphics.getWidth() - 180, 0, 180, 600, 'border', 'movable',
+        'minimizable', 'scalable', 'title') then
         local winX, winY, winW, winH = nukeui:windowGetBounds()
         nukeui:layoutRow('dynamic', 10, 1)
         -- target image
@@ -54,6 +54,7 @@ function ui.update(delta)
         nukeui:image(scaledIm, winX, winY + 60, winW, winW)
         nukeui:layoutRow('dynamic', 180, 1)
         -- stringCanvas image
+        nukeui:image(love.graphics.newImage(stringCanvas:newImageData()), winX, winY + 180 + 60, winW, winW) -- this is gonna be icky and slow.
         nukeui:layoutRow('dynamic', 180, 1)
         -- error image
         nukeui:layoutRow('dynamic', 35, 1)
