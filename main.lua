@@ -16,10 +16,8 @@ function love.load()
     imdata = love.image.newImageData(globals['imageName'])
     print(imdata:getFormat())
     -- convert image to black and white if it isn't already.
-    imdata:mapPixel(function(x, y, r, g, b, a)
-        local l = luminance(r, g, b, a)
-        return l, l, l, a
-    end)
+    imdata = toGrayscale(imdata)
+    -- print sample of image so we know things are working.
     for i = 1, imdata:getWidth(), imdata:getWidth() / 7 do
         local s = ""
         for j = 1, imdata:getHeight(), imdata:getHeight() / 7 do
