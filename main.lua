@@ -1,5 +1,6 @@
 local nuklear = require "nuklear"
 require "globals"
+require "imageprocessing"
 require "hoop"
 require "util"
 
@@ -10,6 +11,24 @@ function love.load()
     love.graphics.setBackgroundColor(love.math.colorFromBytes(131, 59, 142))
     ui = nuklear.newUI()
     initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], 0)
+
+    -- image stuff
+    imdata = love.image.newImageData(globals['imageName'])
+    print(imdata:getFormat())
+    -- convert image to black and white if it isn't already.
+    imdata:mapPixel(function(x, y, r, g, b, a)
+        local l = luminance(r, g, b, a)
+        return l, l, l, a
+    end)
+    for i = 1, imdata:getWidth(), imdata:getWidth() / 7 do
+        local s = ""
+        for j = 1, imdata:getHeight(), imdata:getHeight() / 7 do
+            s = s .. string.format("[%.3f]", imdata:getPixel(i, j)) .. ' '
+        end
+        print(s)
+    end
+    -- imdata = scaleImage(imdata, globals['evaluatorResolution'], globals['evaluatorResolution'])
+    im = love.graphics.newImage(imdata)
 end
 
 function love.update(delta)
@@ -50,6 +69,8 @@ end
 function love.draw()
     drawHoop(globals['nailWidth'])
     ui:draw()
+    love.graphics.setColor(1, 1, 1, 1)
+    love.graphics.draw(im, 0, 0, 0, 0.5, 0.5)
 end
 
 function love.keypressed(key, scancode, isrepeat)
