@@ -3,8 +3,8 @@ A thing for turning strings into pictures
 
 Ideally using Simulated Annealing, but we'll see if I can even get that far.
 
-Next step: not regenerate all the strings from scratch every turn (only change the full table if the # of nodes changes.)
-(if we weren't lazy we wouldn't even have to regenerate the whole table from scratch but meh.)
+Next step: figuring out how to make an image of the strings in the same
+resolution as the image for the evaluator.
 
 Each string is identified by its source node (always less than its destination node), its destination node, and type
 
