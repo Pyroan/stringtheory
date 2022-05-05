@@ -13,7 +13,7 @@ function love.load()
     ui = nuklear.newUI()
     initHoop(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], 0)
 
-    -- image stuff
+    -- image setup
     imdata = love.image.newImageData(globals['imageName'])
     print(imdata:getFormat())
     -- convert image to black and white if it isn't already.
@@ -68,8 +68,12 @@ end
 function love.draw()
     drawHoop(globals['nailWidth'])
     ui:draw()
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.draw(im, 0, 0, 0, 1, 1)
+    love.graphics.setColor(1, 1, 1, 0.2)
+    -- align/scale image so that it's the same size as the hoop.
+    local imScaleFactor = 2 * globals['hoopRadius'] / im:getWidth()
+    local imX = (love.graphics.getWidth() - imScaleFactor * im:getWidth()) / 2
+    local imY = (love.graphics.getHeight() - imScaleFactor * im:getHeight()) / 2
+    love.graphics.draw(im, imX, imY, 0, imScaleFactor, imScaleFactor)
 end
 
 function love.keypressed(key, scancode, isrepeat)
