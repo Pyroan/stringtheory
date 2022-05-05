@@ -1,5 +1,3 @@
-im = love.image.newImageData(globals['imageName'])
-
 --- scale an image to the given pixel dimensions,
 --- using Nearest Neighbor because anything else would be difficult.
 ---@param image love.image.ImageData
@@ -9,10 +7,20 @@ im = love.image.newImageData(globals['imageName'])
 function scaleImage(image, newWidth, newHeight)
     -- but moommmmm i don't wannaaaa
     local w, h = image:getDimensions()
+    -- if the new size is smaller, we just need to sample pictures from the original
+    -- if it's bigger, we need to interpolate
     local newImage = love.image.newImageData(newWidth, newHeight)
     for i = 1, newWidth do
         for j = 1, newHeight do
         end
     end
     return nil
+end
+
+--- return the grayscale value (0..1 inclusive)
+--- of the given pixel
+function luminance(r, g, b, a)
+    a = a or 1
+    local y = 0.2126 * r + 0.7152 * g + 0.0722 * b
+    return y, y, y, a
 end
