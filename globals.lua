@@ -1,14 +1,17 @@
 globals = {
-    hoopRadius = 350, -- inner radius of the circle defined by the nails
-    hoopResolution = 64, -- number of nails
-    nailWidth = 5, -- radius of a nail body.
+    hoopRadius = 350, -- inner radius of the circle defined by the nails, in world units
+    hoopResolution = 16, -- number of nails
+    nailWidth = 5, -- radius of a nail body, in world units
 
     doIsolateStep = false,
     isolateStep = 1,
 
+    ppu = 1,
+
+    imageTransparency = 0.2,
     imageName = "monalisa.bmp",
     evaluatorResolution = 500, -- side length of grid used by evaluator function
-    stringWidth = 0.05, -- diameter of the string
+    stringWidth = 0.05, -- diameter of the string in world units
 
     iterationsPerTemp = 100, -- number of new states to check before decreasing the temperature
     initialTemp = 100
