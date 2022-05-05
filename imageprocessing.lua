@@ -4,17 +4,39 @@
 ---@param newWidth integer
 ---@param newHeight integer
 ---@return love.image.ImageData
-function scaleImage(image, newWidth, newHeight)
+function scaleImageData(imageData, newWidth, newHeight)
     -- but moommmmm i don't wannaaaa
-    local w, h = image:getDimensions()
+    local oldWidth, oldHeight = imageData:getDimensions()
+    -- handle x and y dimensions one at a time
     -- if the new size is smaller, we just need to sample pictures from the original
     -- if it's bigger, we need to interpolate
-    local newImage = love.image.newImageData(newWidth, newHeight)
-    for i = 1, newWidth do
-        for j = 1, newHeight do
+    local widthAdjustedImageData = love.image.newImageData(newWidth, oldHeight)
+    -- handle x axis
+    if newWidth <= oldWidth then
+        local skip = oldWidth / newWidth
+        -- sampling
+        for i = 0, newWidth-1 do
+            for j = 0, oldHeight-1 do
+                widthAdjustedImageData:setPixel(i, j, imageData:getPixel(math.floor(i*skip+0.5),j))
+            end
         end
+    else
+        -- interpolation
     end
-    return nil
+    local finalImageData = love.image.newImageData(newWidth, newHeight)
+    --handle y axis
+    if newHeight <= oldHeight then
+        local skip = oldHeight / newHeight
+        -- sampling
+        for i = 0, newWidth-1 do
+            for j = 0, newHeight-1 do
+                finalImageData:setPixel(i,j,widthAdjustedImageData:getPixel(i,math.floor(j*skip+0.5)))
+            end
+        end
+    else
+        --interpolation
+    end
+    return finalImageData
 end
 
 --- converts imageData to grayscale using luminance function
