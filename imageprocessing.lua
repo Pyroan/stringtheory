@@ -17,10 +17,20 @@ function scaleImage(image, newWidth, newHeight)
     return nil
 end
 
+--- converts imageData to grayscale using luminance function
+---@param imageData love.image.ImageData
+---@return love.image.ImageData "a copy of imageData in grayscale"
+function toGrayscale(imageData)
+    id = imageData:clone()
+    id:mapPixel(function(x, y, r, g, b, a)
+        local y = luminance(r, g, b)
+        return y, y, y, a
+    end)
+    return id
+end
+
 --- return the grayscale value (0..1 inclusive)
---- of the given pixel
-function luminance(r, g, b, a)
-    a = a or 1
-    local y = 0.2126 * r + 0.7152 * g + 0.0722 * b
-    return y, y, y, a
+--- of the given rgb pixel
+function luminance(r, g, b)
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b
 end
