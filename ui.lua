@@ -27,17 +27,40 @@ function ui.update(delta)
         -- string counts/cycles
         local c = globals['hoopResolution']
         if globals['doIsolateStep'] then
-            c = globals['isolateStep'] ~= #nails / 2 and #nails or #nails / 2
+            c = globals['isolateStep'] ~= #hoop.nails / 2 and #hoop.nails or #hoop.nails / 2
             if globals['nailWidth'] > 0 then
                 c = c * 4
             end
-            nukeui:label("Cycles: " .. gcd(#nails, globals['isolateStep']))
+            nukeui:label("Cycles: " .. gcd(#hoop.nails, globals['isolateStep']))
         else
             c = (globals['nailWidth'] > 0 and 4 or 1) * (c * (c - 1)) / 2
         end
+        nukeui:layoutRow('dynamic', 35, 1)
         nukeui:label("Expected Strings: " .. c)
-        nukeui:label("Actual Strings: " .. stringCount, 'wrap', stringCount == c and '#FFFFFF' or '#FF0000')
+        nukeui:label("Actual Strings: " .. hoop.stringCount, 'wrap', hoop.stringCount == c and '#FFFFFF' or '#FF0000')
+        nukeui:layoutRow('dynamic', 35, 1)
+        nukeui:label("Image transparency: " .. math.floor(globals['imageTransparency'] * 100) .. "%")
+        globals['imageTransparency'] = nukeui:slider(0, globals['imageTransparency'], 1, 0.01)
         nukeui:label("FPS: " .. love.timer.getFPS())
+    end
+    nukeui:windowEnd()
+
+    if nukeui:windowBegin('Evaluator Preview', love.graphics.getWidth() - 180, 0, 180, love.graphics.getHeight(),
+        'border', 'movable', 'minimizable', 'title') then
+        local winX, winY, winW, winH = nukeui:windowGetBounds()
+        nukeui:layoutRow('dynamic', 10, 1)
+        -- target image
+        nukeui:label("Target Image")
+        nukeui:image(scaledIm, winX, winY + 60, winW, winW)
+        nukeui:layoutRow('dynamic', 180, 1)
+        -- stringCanvas image
+        nukeui:layoutRow('dynamic', 180, 1)
+        -- error image
+        nukeui:layoutRow('dynamic', 35, 1)
+        nukeui:label(string.format("Current Error: %.2f%%", evaluator.currentError * 100))
+        nukeui:label(string.format("Temperature: %d", evaluator.temperature))
+        -- error graph
+
     end
     nukeui:windowEnd()
     nukeui:frameEnd()

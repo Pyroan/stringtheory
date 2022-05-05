@@ -35,3 +35,18 @@ end
 function slowDecrease(temp, beta)
     return temp / (1 + beta * temp)
 end
+
+function worldToScreenSpace(x, y, ppu, canvas)
+    ppu = ppu or 1
+    local screenWidth, screenHeight
+    if canvas == nil then
+        screenWidth, screenHeight = love.graphics.getDimensions()
+    else
+        screenWidth, screenHeight = canvas:getDimensions()
+    end
+    local newX = x - math.floor((screenWidth / 2))
+    newX = x / ppu
+    local newY = y - math.floor((screenHeight / 2))
+    newY = y / ppu
+    return newX, newY
+end

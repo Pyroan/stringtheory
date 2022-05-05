@@ -16,7 +16,7 @@ end
 --- the specific line is based on `self.type`
 ---@param nailRadius integer "the radius of the nail (in pixels)"
 ---@return boolean "`true` if the string was actually drawn, `false` otherwise"
-function String:draw(nailRadius)
+function String:draw(x, y, nailRadius, ppu, canvas)
     if (nailRadius <= 0 and self.type ~= 1) or not self.active then
         return false
     end
@@ -59,6 +59,13 @@ function String:draw(nailRadius)
         y1 = yOffset + source.y
         y2 = yDelta - yOffset + source.y
     end
+
+    x1, y1 = worldToScreenSpace(x1, y1, ppu, canvas)
+    x2, y2 = worldToScreenSpace(x2, y2, ppu, canvas)
+    x1 = x1 + x
+    y1 = y1 + y
+    x2 = x2 + x
+    y2 = y2 + y
     love.graphics.line(x1, y1, x2, y2)
     return true
 end
