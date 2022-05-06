@@ -1,3 +1,4 @@
+local state = require "appstate"
 local nuklear = require "nuklear"
 require("globals")
 
@@ -36,12 +37,28 @@ function ui.update(delta)
             c = (globals['nailWidth'] > 0 and 4 or 1) * (c * (c - 1)) / 2
         end
         nukeui:layoutRow('dynamic', 35, 1)
-        nukeui:label("Expected Strings: " .. c)
-        nukeui:label("Actual Strings: " .. hoop.stringCount, 'wrap', hoop.stringCount == c and '#FFFFFF' or '#FF0000')
+        nukeui:label("Max Strings: " .. c)
+        nukeui:label("Active Strings: " .. hoop.stringCount, 'wrap', hoop.stringCount == c and '#FFFFFF' or '#FF0000')
         nukeui:layoutRow('dynamic', 35, 1)
         nukeui:label("Image transparency: " .. math.floor(globals['imageTransparency'] * 100) .. "%")
         globals['imageTransparency'] = nukeui:slider(0, globals['imageTransparency'], 1, 0.01)
         nukeui:label("FPS: " .. love.timer.getFPS())
+
+        -- play controls
+        nukeui:layoutRow('dynamic', 35, 3)
+        local playSelected = state.getState() == 'running'
+        local pauseSelected = state.getState() == 'paused'
+        local stopSelected = state.getState() == 'idle'
+        playSelected = nukeui:selectable('Play', nil, 'centered', playSelected)
+        pauseSelected = nukeui:selectable('Pause', nil, 'centered', pauseSelected)
+        stopSelected = nukeui:selectable('Reset', nil, 'centered', stopSelected)
+        if playSelected and state.getState() ~= 'running' then
+            state.setState("running")
+        elseif pauseSelected and state.getState() ~= 'paused' then
+            state.setState("paused")
+        elseif stopSelected and state.getState() ~= 'idle' then
+            state.setState("idle")
+        end
     end
     nukeui:windowEnd()
 
