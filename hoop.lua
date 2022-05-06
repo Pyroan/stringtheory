@@ -1,3 +1,4 @@
+local state = require "appstate"
 require "stringstate"
 require "util"
 require "wire"
@@ -16,7 +17,7 @@ function hoop.load(nailResolution, hoopRadius, nailRadius, angle)
     hoop.nails = hoop.loadNails(nailResolution, hoopRadius, nailRadius, angle)
     if hoop.stringState == nil then
         hoop.stringState = StringState:new({}, hoop.nails)
-    else
+    elseif state.getState() == 'running' then
         hoop.stringState = hoop.stringState:neighbor()
     end
 end

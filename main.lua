@@ -7,12 +7,14 @@ require "ui"
 require "util"
 
 function love.load()
-    love.window.setMode(1280, 720, {
+    love.window.setMode(1600, 900, {
         resizable = true
     })
     love.window.setTitle("Vi's String Theory")
     love.graphics.setDefaultFilter("nearest")
     love.graphics.setBackgroundColor(love.math.colorFromBytes(131, 59, 142))
+
+    appstate.setState('running')
 
     ui.load()
     hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], 0)
