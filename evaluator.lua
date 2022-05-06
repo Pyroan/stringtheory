@@ -27,6 +27,7 @@ end
 --- calculate the error ("heat") between targetImage and generatedImage, defined here as the
 --- sum of the differences in pixel brightness for every pixel in the images that's contained within
 --- the hoop, normalized to ... something. possibly just the total number of pixels.
+--- in the future we can use the # of strings as a factor as well, so we can use as little material as possible
 function evaluator.getError()
     local totalError = 0
     local w, h = evaluator.targetImageData:getDimensions()

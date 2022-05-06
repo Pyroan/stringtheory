@@ -1,3 +1,4 @@
+local state = require "appstate"
 require "evaluator"
 require "globals"
 require "hoop"
@@ -14,18 +15,18 @@ function love.load()
     love.graphics.setBackgroundColor(love.math.colorFromBytes(131, 59, 142))
 
     ui.load()
-
     hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], 0)
 
     -- image setup
     imdata = love.image.newImageData(globals['imageName'])
     im = love.graphics.newImage(imdata)
-    print(imdata:getFormat())
+    print("Image format: " .. imdata:getFormat())
     -- convert image to black and white if it isn't already.
     imdata = toGrayscale(imdata)
     -- print sample of image so we know things are working.
+    print("Image sample:")
     for i = 1, imdata:getWidth(), imdata:getWidth() / 7 do
-        local s = ""
+        local s = "\t"
         for j = 1, imdata:getHeight(), imdata:getHeight() / 7 do
             s = s .. string.format("[%.3f]", imdata:getPixel(i, j)) .. ' '
         end
