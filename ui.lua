@@ -12,38 +12,6 @@ end
 function ui.update(delta)
     nukeui:frameBegin()
     if nukeui:windowBegin('Settings', 0, 0, 180, love.graphics.getHeight(), 'border', 'minimizable', 'title') then
-        nukeui:layoutRow('dynamic', 35, 1)
-        -- nail/hoop params
-        nukeui:label("Nail Radius: " .. globals['nailWidth'])
-        globals['nailWidth'] = nukeui:slider(0, globals['nailWidth'], 100, 1)
-        nukeui:label("Hoop Radius: " .. globals['hoopRadius'])
-        globals['hoopRadius'] = nukeui:slider(0, globals['hoopRadius'], love.graphics.getHeight() / 2, 1)
-        globals['hoopResolution'] = nukeui:property('Nails', 2, globals['hoopResolution'], 128, 1, 1)
-        -- isolated step
-        globals['doIsolateStep'] = nukeui:checkbox("Isolate Step", globals['doIsolateStep'])
-        if globals['doIsolateStep'] then
-            globals['isolateStep'] = nukeui:property("Step", 1, globals['isolateStep'],
-                math.floor(globals['hoopResolution'] / 2), 1, 1)
-        end
-        -- string counts/cycles
-        local c = globals['hoopResolution']
-        if globals['doIsolateStep'] then
-            c = globals['isolateStep'] ~= #hoop.nails / 2 and #hoop.nails or #hoop.nails / 2
-            if globals['nailWidth'] > 0 then
-                c = c * 4
-            end
-            nukeui:label("Cycles: " .. gcd(#hoop.nails, globals['isolateStep']))
-        else
-            c = (globals['nailWidth'] > 0 and 4 or 1) * (c * (c - 1)) / 2
-        end
-        nukeui:layoutRow('dynamic', 35, 1)
-        nukeui:label("Max Strings: " .. c)
-        nukeui:label("Active Strings: " .. hoop.stringCount, 'wrap', hoop.stringCount == c and '#FFFFFF' or '#FF0000')
-        nukeui:layoutRow('dynamic', 35, 1)
-        nukeui:label("Image transparency: " .. math.floor(globals['imageTransparency'] * 100) .. "%")
-        globals['imageTransparency'] = nukeui:slider(0, globals['imageTransparency'], 1, 0.01)
-        nukeui:label("FPS: " .. love.timer.getFPS())
-
         -- play controls
         nukeui:layoutRow('dynamic', 35, 3)
         local playSelected = state.getState() == 'running'
@@ -59,6 +27,47 @@ function ui.update(delta)
         elseif stopSelected and state.getState() ~= 'idle' then
             state.setState("idle")
         end
+        --- TODO Save/Load/Generate random StringState
+
+        -- TODO evaluator configuration
+        nukeui:layoutRow('dynamic', 25, 1)
+
+        -- nail/hoop params
+        nukeui:layoutRow('dynamic', 25, 1)
+        nukeui:label("Nail Radius: " .. globals['nailWidth'])
+        globals['nailWidth'] = nukeui:slider(0, globals['nailWidth'], 100, 1)
+        nukeui:label("Hoop Radius: " .. globals['hoopRadius'])
+        globals['hoopRadius'] = nukeui:slider(0, globals['hoopRadius'], love.graphics.getHeight() / 2, 1)
+        globals['hoopResolution'] = nukeui:property('Nails', 2, globals['hoopResolution'], 128, 1, 1)
+        -- isolated step
+        globals['doIsolateStep'] = nukeui:checkbox("Isolate Step", globals['doIsolateStep'])
+        if globals['doIsolateStep'] then
+            globals['isolateStep'] = nukeui:property("Step", 1, globals['isolateStep'],
+                math.floor(globals['hoopResolution'] / 2), 1, 1)
+        end
+
+        -- string counts/cycles
+        local c = globals['hoopResolution']
+        if globals['doIsolateStep'] then
+            c = globals['isolateStep'] ~= #hoop.nails / 2 and #hoop.nails or #hoop.nails / 2
+            if globals['nailWidth'] > 0 then
+                c = c * 4
+            end
+            nukeui:label("Cycles: " .. gcd(#hoop.nails, globals['isolateStep']))
+        else
+            c = (globals['nailWidth'] > 0 and 4 or 1) * (c * (c - 1)) / 2
+        end
+        nukeui:label("Image transparency: " .. math.floor(globals['imageTransparency'] * 100) .. "%")
+        globals['imageTransparency'] = nukeui:slider(0, globals['imageTransparency'], 1, 0.01)
+
+        -- debug info
+        nukeui:layoutRow('dynamic', 35, 1)
+        nukeui:label("Max Strings: " .. c)
+        nukeui:label("Active Strings: " .. hoop.stringCount, 'wrap', hoop.stringCount == c and '#FFFFFF' or '#FF0000')
+        nukeui:layoutRow('dynamic', 35, 1)
+
+        nukeui:label("FPS: " .. love.timer.getFPS())
+
     end
     nukeui:windowEnd()
 

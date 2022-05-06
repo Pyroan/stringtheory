@@ -22,6 +22,7 @@ function scaleImageData(imageData, newWidth, newHeight)
         end
     else
         -- TODO interpolation
+        error("The target resolution is larger than the image, and we can't handle that yet!")
     end
     local finalImageData = love.image.newImageData(newWidth, newHeight)
     -- handle y axis
@@ -35,6 +36,7 @@ function scaleImageData(imageData, newWidth, newHeight)
         end
     else
         -- TODO interpolation
+        error("The target resolution is larger than the image, and we can't handle that yet!")
     end
     return finalImageData
 end
