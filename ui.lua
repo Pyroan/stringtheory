@@ -10,7 +10,7 @@ end
 
 function ui.update(delta)
     nukeui:frameBegin()
-    if nukeui:windowBegin('Settings', 0, 0, 180, love.graphics.getHeight(), 'border', 'movable', 'minimizable', 'title') then
+    if nukeui:windowBegin('Settings', 0, 0, 180, love.graphics.getHeight(), 'border', 'minimizable', 'title') then
         nukeui:layoutRow('dynamic', 35, 1)
         -- nail/hoop params
         nukeui:label("Nail Radius: " .. globals['nailWidth'])
@@ -45,21 +45,18 @@ function ui.update(delta)
     end
     nukeui:windowEnd()
 
-    if nukeui:windowBegin('Evaluator Preview', love.graphics.getWidth() - 180, 0, 180, 600, 'border', 'movable',
-        'minimizable', 'scalable', 'title') then
+    if nukeui:windowBegin('Evaluator Preview', love.graphics.getWidth() - 300, 0, 300, love.graphics.getHeight(),
+        'border', 'minimizable', 'title') then
         local winX, winY, winW, winH = nukeui:windowGetBounds()
-        nukeui:layoutRow('dynamic', 10, 1)
-        -- target image
-        nukeui:label("Target Image")
-        nukeui:image(scaledIm, winX, winY + 60, winW, winW)
-        nukeui:layoutRow('dynamic', 180, 1)
-        -- stringCanvas image
-        nukeui:image(love.graphics.newImage(stringCanvas:newImageData()), winX, winY + 180 + 60, winW, winW) -- this is gonna be icky and slow.
-        nukeui:layoutRow('dynamic', 180, 1)
-        -- error image
-        nukeui:layoutRow('dynamic', 35, 1)
+        nukeui:layoutRow('dynamic', 15, 1)
         nukeui:label(string.format("Current Error: %.2f%%", evaluator.currentError * 100))
         nukeui:label(string.format("Temperature: %d", evaluator.temperature))
+        -- target image
+        nukeui:image(scaledIm, winX, winY + 105, winW, winW)
+        -- stringCanvas image
+        nukeui:image(love.graphics.newImage(stringCanvas:newImageData()), winX, winY + winW + 105, winW, winW) -- this is gonna be icky and slow.
+        -- error image
+
         -- error graph
 
     end
@@ -78,7 +75,7 @@ end
 ]]
 
 function love.keypressed(key, scancode, isrepeat)
-    if ui:keypressed(key, scancode, isrepeat) then
+    if nukeui:keypressed(key, scancode, isrepeat) then
         return -- event consumed
     end
 end
