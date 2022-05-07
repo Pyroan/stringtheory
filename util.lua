@@ -46,3 +46,12 @@ function worldToScreenSpace(x, y, ppu, canvas)
     newY = y / ppu
     return newX, newY
 end
+
+-- https://gist.github.com/Uradamus/10323382?permalink_comment_id=2754684#gistcomment-2754684
+function shuffle(tbl)
+    for i = #tbl, 2, -1 do
+        local j = math.random(i)
+        tbl[i], tbl[j] = tbl[j], tbl[i]
+    end
+    return tbl
+end

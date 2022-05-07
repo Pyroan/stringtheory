@@ -23,12 +23,34 @@ function StringState:new(o, nodes)
     return o
 end
 
+function StringState:newRandom(activeDensity, nodes)
+    local newState = StringState:new({}, nodes)
+    --- generate a sequence of (activeDensity * #strings) unique indexes we'll toggle.
+    local ids = {}
+    for i = 1, #newState.strings do
+        ids[i] = i -- god this is my new least favorite way to generate a range.
+    end
+    ids = shuffle(ids)
+    for i = 1, math.floor(#ids * (1 - activeDensity)) do
+        newState.strings[ids[i]].active = false;
+    end
+    return newState
+end
+
 --- Generates a state from a string representing the 
 --- on/off values of each string.
 --- no I do not know how that spec works yet 
 ---@param stringState string
 ---@return table
 function StringState:newFromState(o, stringState)
+end
+
+function StringState:clone()
+    local clone = StringState:new({}, self.nodes)
+    for i = 1, #self.strings do
+        clone.strings[i].active = self.strings[i].active
+    end
+    return clone
 end
 
 --- return a pseudo-random neighbor of the given state,
@@ -38,11 +60,8 @@ end
 function StringState:neighbor(maxDistance)
     maxDistance = maxDistance or 1
     -- make a copy of ourselves.
-    -- local neighbor = StringState:newFromState(self:toString())
-    local neighbor = StringState:new({}, self.nodes)
-    for i = 1, #self.strings do
-        neighbor.strings[i].active = self.strings[i].active
-    end
+    local neighbor = self:clone()
+    -- randomly toggle some strings
     for i = 1, math.random(1, maxDistance) do
         local n = math.random(1, #self.strings)
         neighbor.strings[n].active = not neighbor.strings[n].active

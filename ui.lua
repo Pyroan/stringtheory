@@ -29,11 +29,15 @@ function ui.update(delta)
         end
         --- TODO Save/Load/Generate random StringState
         -- set string density (% of strings to make active), add a "generate" button, etc
-
+        nukeui:layoutRow('dynamic', 25, 1)
+        nukeui:label(string.format("Active Density: %d%%", math.floor(globals['activeDensity'] * 100)))
+        globals['activeDensity'] = nukeui:slider(0, globals['activeDensity'], 1, 0.01)
+        if nukeui:button("Generate Random State") then
+            hoop.stringState = StringState:newRandom(globals['activeDensity'], hoop.nails)
+        end
         -- TODO evaluator configuration
         nukeui:layoutRow('dynamic', 25, 1)
         --- set initial temp, iterations per temp, temp decease function, etc.
-
         -- nail/hoop params
         nukeui:layoutRow('dynamic', 25, 1)
         nukeui:label("Nail Radius: " .. globals['nailWidth'])
