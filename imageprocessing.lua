@@ -45,7 +45,7 @@ end
 ---@param imageData love.image.ImageData
 ---@return love.image.ImageData "a copy of imageData in grayscale"
 function toGrayscale(imageData)
-    id = imageData:clone()
+    local id = imageData:clone()
     id:mapPixel(function(x, y, r, g, b, a)
         local y = luminance(r, g, b)
         return y, y, y, a
