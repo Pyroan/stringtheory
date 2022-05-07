@@ -121,9 +121,14 @@ function love.keyreleased(key, scancode)
     end
 end
 
+local mouseHeld = false
+
 function love.mousepressed(x, y, button, istouch, presses)
     if nukeui:mousepressed(x, y, button, istouch, presses) then
         return -- event consumed
+    end
+    if button == 1 then
+        mouseHeld = true
     end
 end
 
@@ -131,11 +136,16 @@ function love.mousereleased(x, y, button, istouch, presses)
     if nukeui:mousereleased(x, y, button, istouch, presses) then
         return -- event consumed
     end
+    mouseHeld = false
 end
 
 function love.mousemoved(x, y, dx, dy, istouch)
     if nukeui:mousemoved(x, y, dx, dy, istouch) then
         return -- event consumed
+    end
+    if mouseHeld then
+        globals['xOffset'] = globals['xOffset'] + dx
+        globals['yOffset'] = globals['yOffset'] + dy
     end
 end
 
