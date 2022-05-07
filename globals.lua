@@ -6,6 +6,7 @@ globals = {
     doIsolateStep = false,
     isolateStep = 1,
 
+    activeDensity = 0.5,
     ppu = 1,
 
     imageTransparency = 0.2,

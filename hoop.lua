@@ -20,13 +20,13 @@ function hoop.load(nailResolution, hoopRadius, nailRadius, angle)
     hoop.nails = hoop.loadNails(nailResolution, hoopRadius, nailRadius, angle)
     if hoop.stringState == nil then
         hoop.stringState = StringState:new({}, hoop.nails)
-        hoop.initialStringState = StringState:newFromState(hoop.stringState)
+        hoop.initialStringState = hoop.stringState:clone()
     end
 end
 
 -- set the stringState back to its initial state.
 function hoop.reset()
-    hoop.stringState = StringState:newFromState(hoop.initialStringState)
+    hoop.stringState = hoop.initialStringState:clone()
 end
 
 function hoop.update(delta)
