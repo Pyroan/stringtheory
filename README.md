@@ -24,5 +24,6 @@ Each string is identified by its source node (always less than its destination n
 - Can currently only handle images larger than `evaluatorResolution`
 - Can also only "correctly" handle images with square aspect ratios
   - Will scale non-square images to be square, rather than crop.
+- Hoop size is clipped to the half the height of the screen, which is arbitrary and unnecessary.
 
 uses [LÖVE-Nuklear](https://github.com/keharriso/love-nuklear) for UI

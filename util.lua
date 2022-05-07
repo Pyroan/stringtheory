@@ -32,10 +32,6 @@ function HSL(h, s, l, a)
     return r + m, g + m, b + m, a
 end
 
-function slowDecrease(temp, beta)
-    return temp / (1 + beta * temp)
-end
-
 function worldToScreenSpace(x, y, ppu, canvas)
     ppu = ppu or 1
     local screenWidth, screenHeight

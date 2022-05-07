@@ -14,8 +14,6 @@ function love.load()
     love.graphics.setDefaultFilter("nearest")
     love.graphics.setBackgroundColor(love.math.colorFromBytes(131, 59, 142))
 
-    appstate.setState('running')
-
     ui.load()
     hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], 0)
 
@@ -50,7 +48,7 @@ end
 
 function love.update(delta)
     ui.update(delta)
-    hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], 0)
+    hoop.update(delta)
 
     -- draw the hoop to the string canvas.
     canvasPPU = (2 * globals['hoopRadius']) / math.min(stringCanvas:getDimensions())
