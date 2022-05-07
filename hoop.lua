@@ -15,13 +15,12 @@ hoop = {
 ---@param hoopRadius integer
 ---@param nailRadius integer
 ---@param angle number
-function hoop.load(nailResolution, hoopRadius, nailRadius, angle)
+function hoop.load(nailResolution, hoopRadius, nailRadius, activeDensity, angle)
     angle = angle or 0
+    activeDensity = activeDensity or 1
     hoop.nails = hoop.loadNails(nailResolution, hoopRadius, nailRadius, angle)
-    if hoop.stringState == nil then
-        hoop.stringState = StringState:new({}, hoop.nails)
-        hoop.initialStringState = hoop.stringState:clone()
-    end
+    hoop.stringState = StringState:newRandom(activeDensity, hoop.nails)
+    hoop.initialStringState = hoop.stringState:clone()
 end
 
 -- set the stringState back to its initial state.
@@ -36,12 +35,15 @@ function hoop.update(delta)
 end
 
 function hoop.onHoopRadiusChanged()
+    error("Not yet implemented!")
 end
 
 function hoop.onNailResolutionChanged()
+    error("Not yet implemented!")
 end
 
 function hoop.onNailRadiusChanged()
+    error("Not yet implemented!")
 end
 
 --- Draw the hoop
@@ -83,3 +85,7 @@ function hoop.drawNails(x, y, nailRadius, ppu, canvas)
     love.graphics.setColor(oldColor)
 end
 
+--- Convert to a JSON string so we can save/load
+function hoop.serialize()
+    error("Not yet implemented!")
+end
