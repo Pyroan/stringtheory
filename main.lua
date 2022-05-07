@@ -75,13 +75,14 @@ function love.draw()
     -- align/scale image so that it's the same size/location as the hoop.
     local imScaleFactor = 2 * globals['hoopRadius'] / im:getWidth()
     imScaleFactor = imScaleFactor / globals['ppu']
-    local imX = (love.graphics.getWidth() - imScaleFactor * im:getWidth()) / 2
-    local imY = (love.graphics.getHeight() - imScaleFactor * im:getHeight()) / 2
+    local imX = globals['xOffset'] + (love.graphics.getWidth() - imScaleFactor * im:getWidth()) / 2
+    local imY = globals['yOffset'] + (love.graphics.getHeight() - imScaleFactor * im:getHeight()) / 2
     love.graphics.draw(im, imX, imY, 0, imScaleFactor, imScaleFactor)
 
     -- draw the main preview of the hoop
     love.graphics.setColor(0, 0, 0, 0.4)
-    hoop.draw(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2, globals['nailWidth'], globals['ppu'])
+    hoop.draw(globals['xOffset'] + love.graphics.getWidth() / 2, globals['yOffset'] + love.graphics.getHeight() / 2,
+        globals['nailWidth'], globals['ppu'])
     love.graphics.setColor(1, 1, 1, 1)
 
     ui.draw()
