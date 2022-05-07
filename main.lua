@@ -12,10 +12,11 @@ function love.load()
     })
     love.window.setTitle("Vi's String Theory")
     love.graphics.setDefaultFilter("nearest")
-    love.graphics.setBackgroundColor(love.math.colorFromBytes(131, 59, 142))
+    -- love.graphics.setBackgroundColor(love.math.colorFromBytes(131, 59, 142))
+    love.graphics.setBackgroundColor(1, 1, 1, 1)
 
     ui.load()
-    hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], 0)
+    hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'])
 
     -- image setup
     imdata = love.image.newImageData(globals['imageName'])

@@ -14,18 +14,19 @@ function ui.update(delta)
     if nukeui:windowBegin('Settings', 0, 0, 180, love.graphics.getHeight(), 'border', 'minimizable', 'title') then
         -- play controls
         nukeui:layoutRow('dynamic', 35, 3)
-        local playSelected = state.getState() == 'running'
+        local runSelected = state.getState() == 'running'
         local pauseSelected = state.getState() == 'paused'
         local stopSelected = state.getState() == 'idle'
-        playSelected = nukeui:selectable('Play', nil, 'centered', playSelected)
+        runSelected = nukeui:selectable('Run', nil, 'centered', runSelected)
         pauseSelected = nukeui:selectable('Pause', nil, 'centered', pauseSelected)
         stopSelected = nukeui:selectable('Reset', nil, 'centered', stopSelected)
-        if playSelected and state.getState() ~= 'running' then
+        if runSelected and state.getState() ~= 'running' then
             state.setState("running")
         elseif pauseSelected and state.getState() ~= 'paused' then
             state.setState("paused")
         elseif stopSelected and state.getState() ~= 'idle' then
             state.setState("idle")
+            hoop.reset()
         end
         --- TODO Save/Load/Generate random StringState
         -- set string density (% of strings to make active), add a "generate" button, etc
@@ -33,7 +34,7 @@ function ui.update(delta)
         nukeui:label(string.format("Active Density: %d%%", math.floor(globals['activeDensity'] * 100)))
         globals['activeDensity'] = nukeui:slider(0, globals['activeDensity'], 1, 0.01)
         if nukeui:button("Generate Random State") then
-            hoop.stringState = StringState:newRandom(globals['activeDensity'], hoop.nails)
+            hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], globals['activeDensity'])
         end
         -- TODO evaluator configuration
         nukeui:layoutRow('dynamic', 25, 1)
@@ -68,8 +69,10 @@ function ui.update(delta)
 
         -- debug info
         nukeui:layoutRow('dynamic', 35, 1)
-        nukeui:label("Max Strings: " .. c)
-        nukeui:label("Active Strings: " .. hoop.stringCount, 'wrap' --[[,hoop.stringCount == c and '#FFFFFF' or '#FF0000']] )
+        -- nukeui:label("Max Strings: " .. c)
+        -- nukeui:label("Active Strings: " .. hoop.stringCount, 'wrap' --[[,hoop.stringCount == c and '#FFFFFF' or '#FF0000']] )
+        nukeui:label(string.format("Active Strings:\n%d/%d (%.2f%%)", hoop.stringCount, c, hoop.stringCount / c * 100),
+            'wrap')
         nukeui:layoutRow('dynamic', 35, 1)
 
         nukeui:label("FPS: " .. love.timer.getFPS())
@@ -146,4 +149,10 @@ function love.wheelmoved(x, y)
     if nukeui:wheelmoved(x, y) then
         return -- event consumed
     end
+    -- zoom in/out on preview.
+    globals['ppu'] = globals['ppu'] + (globals['ppu'] / y * 0.1)
+    if globals['ppu'] < 0.01 then
+        globals['ppu'] = 0.01
+    end
+    print(globals['ppu'])
 end
