@@ -12,11 +12,11 @@ function love.load()
     })
     love.window.setTitle("Vi's String Theory")
     love.graphics.setDefaultFilter("nearest")
-    -- love.graphics.setBackgroundColor(love.math.colorFromBytes(131, 59, 142))
-    love.graphics.setBackgroundColor(1, 1, 1, 1)
+    love.graphics.setBackgroundColor(love.math.colorFromBytes(131, 59, 142))
+    -- love.graphics.setBackgroundColor(1, 1, 1, 1)
 
     ui.load()
-    hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'])
+    hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], globals['activeDensity'])
 
     -- image setup
     imdata = love.image.newImageData(globals['imageName'])
@@ -35,37 +35,13 @@ function love.load()
     end
     imdata = scaleImageData(imdata, globals['evaluatorResolution'], globals['evaluatorResolution'])
     scaledIm = love.graphics.newImage(imdata)
-
-    -- string canvas setup
-    -- the string canvas isn't actually drawn to the screen, but generated for the sake of our error evaluation.
-    -- unfortunately this means that every string is drawn twice per frame.
-    stringCanvas = love.graphics.newCanvas(globals['evaluatorResolution'], globals['evaluatorResolution'])
-
-    canvasPPU = (2 * globals['hoopRadius']) / math.min(stringCanvas:getDimensions())
-    print(string.format("Canvas PPU: %.3f", canvasPPU))
-
-    evaluator.load(imData)
+    evaluator.load(imdata:clone())
 end
 
 function love.update(delta)
     ui.update(delta)
     hoop.update(delta)
-
-    -- draw the hoop to the string canvas.
-    canvasPPU = (2 * globals['hoopRadius']) / math.min(stringCanvas:getDimensions())
-    love.graphics.setCanvas(stringCanvas)
-    love.graphics.clear(0, 0, 0, 1)
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.circle('fill', stringCanvas:getWidth() / 2, stringCanvas:getHeight() / 2, stringCanvas:getWidth() / 2)
-
-    love.graphics.setLineWidth(globals['stringWidth'] * canvasPPU)
-    love.graphics.setColor(0, 0, 0, 1)
-    hoop.draw(stringCanvas:getWidth() / 2, stringCanvas:getHeight() / 2, globals['nailWidth'], canvasPPU, stringCanvas)
-
-    -- reset anything we may have messed up.
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.setLineWidth(1)
-    love.graphics.setCanvas()
+    evaluator.update(delta)
 end
 
 function love.draw()

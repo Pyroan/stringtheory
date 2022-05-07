@@ -27,6 +27,7 @@ function ui.update(delta)
         elseif stopSelected and state.getState() ~= 'idle' then
             state.setState("idle")
             hoop.reset()
+            evaluator.reset()
         end
         --- TODO Save/Load/Generate random StringState
         -- set string density (% of strings to make active), add a "generate" button, etc
@@ -84,12 +85,12 @@ function ui.update(delta)
         'border', 'minimizable', 'title') then
         local winX, winY, winW, winH = nukeui:windowGetBounds()
         nukeui:layoutRow('dynamic', 15, 1)
-        nukeui:label(string.format("Current Error: %.2f%%", evaluator.currentError * 100))
-        nukeui:label(string.format("Temperature: %d", evaluator.temperature))
+        nukeui:label(string.format("Current Error: %.4f%%", evaluator.currentError * 100))
+        nukeui:label(string.format("Temperature: %.4f", evaluator.temperature))
         -- target image
         nukeui:image(scaledIm, winX, winY + 105, winW, winW)
         -- stringCanvas image
-        nukeui:image(love.graphics.newImage(stringCanvas:newImageData()), winX, winY + winW + 105, winW, winW) -- this is gonna be icky and slow.
+        nukeui:image(love.graphics.newImage(evaluator.currentImageData), winX, winY + winW + 105, winW, winW) -- this is gonna be icky and slow.
         -- error image
 
         -- error graph

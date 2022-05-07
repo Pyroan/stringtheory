@@ -4,7 +4,7 @@ globals = {
     hoopResolution = 64, -- number of nails
     nailWidth = 5, -- radius of a nail body, in world units
 
-    activeDensity = 0.5,
+    activeDensity = 0.08,
     -- Preview settings
     doIsolateStep = false,
     isolateStep = 1,
@@ -16,9 +16,9 @@ globals = {
 
     -- evaluator settings
     imageName = "monalisa.bmp",
-    evaluatorResolution = 500, -- side length of grid used by evaluator function
+    evaluatorResolution = 1000, -- side length of grid used by evaluator function
     stringWidth = 0.5, -- diameter of the string in world units. functionally limited by evaluator resolution.
 
     iterationsPerTemp = 100, -- number of new states to check before decreasing the temperature
-    initialTemp = 100
+    initialTemp = 10
 }

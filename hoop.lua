@@ -29,9 +29,9 @@ function hoop.reset()
 end
 
 function hoop.update(delta)
-    if state.getState() == 'running' then
-        hoop.stringState = hoop.stringState:neighbor()
-    end
+    -- if state.getState() == 'running' then
+    --     hoop.stringState = hoop.stringState:neighbor()
+    -- end
 end
 
 function hoop.onHoopRadiusChanged()
