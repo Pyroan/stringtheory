@@ -5,7 +5,10 @@ require "wire"
 
 hoop = {
     stringCount = 0,
-    nails = {}
+    nailRadius = 1,
+    nails = {},
+    stringState = nil,
+    initialStringState = nil
 }
 --- Initialize the "hoop" - the polygon of nails and strings that we're drawing.
 ---@param nailResolution integer
@@ -17,12 +20,19 @@ function hoop.load(nailResolution, hoopRadius, nailRadius, angle)
     hoop.nails = hoop.loadNails(nailResolution, hoopRadius, nailRadius, angle)
     if hoop.stringState == nil then
         hoop.stringState = StringState:new({}, hoop.nails)
-    elseif state.getState() == 'running' then
-        hoop.stringState = hoop.stringState:neighbor()
+        hoop.initialStringState = StringState:newFromState(hoop.stringState)
     end
 end
 
+-- set the stringState back to its initial state.
+function hoop.reset()
+    hoop.stringState = StringState:newFromState(hoop.initialStringState)
+end
+
 function hoop.update(delta)
+    if state.getState() == 'running' then
+        hoop.stringState = hoop.stringState:neighbor()
+    end
 end
 
 function hoop.onHoopRadiusChanged()

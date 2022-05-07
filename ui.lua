@@ -28,9 +28,11 @@ function ui.update(delta)
             state.setState("idle")
         end
         --- TODO Save/Load/Generate random StringState
+        -- set string density (% of strings to make active), add a "generate" button, etc
 
         -- TODO evaluator configuration
         nukeui:layoutRow('dynamic', 25, 1)
+        --- set initial temp, iterations per temp, temp decease function, etc.
 
         -- nail/hoop params
         nukeui:layoutRow('dynamic', 25, 1)
@@ -63,7 +65,7 @@ function ui.update(delta)
         -- debug info
         nukeui:layoutRow('dynamic', 35, 1)
         nukeui:label("Max Strings: " .. c)
-        nukeui:label("Active Strings: " .. hoop.stringCount, 'wrap', hoop.stringCount == c and '#FFFFFF' or '#FF0000')
+        nukeui:label("Active Strings: " .. hoop.stringCount, 'wrap' --[[,hoop.stringCount == c and '#FFFFFF' or '#FF0000']] )
         nukeui:layoutRow('dynamic', 35, 1)
 
         nukeui:label("FPS: " .. love.timer.getFPS())
