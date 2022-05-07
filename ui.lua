@@ -160,9 +160,12 @@ function love.wheelmoved(x, y)
         return -- event consumed
     end
     -- zoom in/out on preview.
-    globals['ppu'] = globals['ppu'] + (globals['ppu'] / y * 0.1)
+    local dz = -globals['ppu'] / y * 0.1
+    globals['ppu'] = globals['ppu'] + dz
     if globals['ppu'] < 0.01 then
         globals['ppu'] = 0.01
     end
     print(globals['ppu'])
+    -- TODO realign offset to keep the area under the mouse the same...
+
 end
