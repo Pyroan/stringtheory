@@ -42,7 +42,7 @@ function evaluator.load(targetImageData)
     -- unfortunately this means that every string is drawn twice per frame.
     evaluator.stringCanvas = love.graphics.newCanvas(globals['evaluatorResolution'], globals['evaluatorResolution'])
     print(string.format("Evaluator dimensions: %d %d", evaluator.stringCanvas:getDimensions()))
-    canvasPPU = (2 * globals['hoopRadius']) / math.min(evaluator.stringCanvas:getDimensions())
+    canvasPPU = (2 * hoop.radius) / math.min(evaluator.stringCanvas:getDimensions())
     evaluator.currentImageData = evaluator.stringCanvas:newImageData()
     print(string.format("Canvas PPU: %.3f", canvasPPU))
 end
@@ -60,7 +60,7 @@ function evaluator.update(delta)
     if appState.getState() ~= 'running' then
         return
     end
-    canvasPPU = (2 * globals['hoopRadius']) / math.min(evaluator.stringCanvas:getDimensions())
+    canvasPPU = (2 * hoop.radius) / math.min(evaluator.stringCanvas:getDimensions())
     -- get a neighbor.
     local old = hoop.stringState
     hoop.stringState = hoop.stringState:neighbor(math.floor(
@@ -74,8 +74,8 @@ function evaluator.update(delta)
 
     love.graphics.setLineWidth(globals['stringWidth'] * canvasPPU)
     love.graphics.setColor(0, 0, 0, 0.5)
-    hoop.draw(evaluator.stringCanvas:getWidth() / 2, evaluator.stringCanvas:getHeight() / 2, globals['nailWidth'],
-        canvasPPU, evaluator.stringCanvas)
+    hoop.draw(evaluator.stringCanvas:getWidth() / 2, evaluator.stringCanvas:getHeight() / 2, canvasPPU,
+        evaluator.stringCanvas)
 
     evaluator.currentImageData = evaluator.stringCanvas:newImageData()
     -- reset anything we may have messed up.
@@ -119,7 +119,7 @@ function evaluator.getError(currentImageData, targetImageData)
             -- make sure we're within the hoop.
             local xOff = i - w / 2
             local yOff = j - h / 2
-            if math.sqrt(xOff * xOff + yOff * yOff) <= globals['hoopRadius'] * canvasPPU then
+            if math.sqrt(xOff * xOff + yOff * yOff) <= hoop.radius * canvasPPU then
                 -- only taking one return value is ok for grayscale since all components should be the same.
                 local t = targetImageData:getPixel(i, j)
                 local g = currentImageData:getPixel(i, j)

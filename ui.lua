@@ -35,7 +35,7 @@ function ui.update(delta)
         nukeui:label(string.format("Active Density: %d%%", math.floor(globals['activeDensity'] * 100)))
         globals['activeDensity'] = nukeui:slider(0, globals['activeDensity'], 1, 0.01)
         if nukeui:button("Generate Random State") then
-            hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], globals['activeDensity'])
+            hoop.load(globals['activeDensity'])
         end
         -- TODO evaluator configuration
         nukeui:layoutRow('dynamic', 25, 1)
@@ -46,16 +46,16 @@ function ui.update(delta)
         --- set initial temp, iterations per temp, temp decease function, etc.
         -- nail/hoop params
         nukeui:layoutRow('dynamic', 25, 1)
-        nukeui:label("Nail Radius: " .. globals['nailWidth'])
-        globals['nailWidth'] = nukeui:slider(0, globals['nailWidth'], 100, 1)
-        nukeui:label("Hoop Radius: " .. globals['hoopRadius'])
-        globals['hoopRadius'] = nukeui:slider(0, globals['hoopRadius'], love.graphics.getHeight() / 2, 1)
-        globals['hoopResolution'] = nukeui:property('Nails', 2, globals['hoopResolution'], 128, 1, 1)
+        nukeui:label("Nail Radius: " .. hoop.nailRadius)
+        hoop.nailRadius = nukeui:slider(0, hoop.nailRadius, 100, 1)
+        nukeui:label("Hoop Radius: " .. hoop.radius)
+        hoop.radius = nukeui:slider(0, hoop.radius, love.graphics.getHeight() / 2, 1)
+        hoop.resolution = nukeui:property('Nails', 2, hoop.resolution, 128, 1, 1)
         -- isolated step
         globals['doIsolateStep'] = nukeui:checkbox("Isolate Step", globals['doIsolateStep'])
         if globals['doIsolateStep'] then
-            globals['isolateStep'] = nukeui:property("Step", 1, globals['isolateStep'],
-                math.floor(globals['hoopResolution'] / 2), 1, 1)
+            globals['isolateStep'] = nukeui:property("Step", 1, globals['isolateStep'], math.floor(hoop.resolution / 2),
+                1, 1)
         end
 
         nukeui:label("Image transparency: " .. math.floor(globals['imageTransparency'] * 100) .. "%")
@@ -72,15 +72,15 @@ function ui.update(delta)
         nukeui:label(string.format("Temperature: %.4f", evaluator.temperature))
         -- debug info
         -- string counts/cycles
-        local c = globals['hoopResolution']
+        local c = hoop.resolution
         if globals['doIsolateStep'] then
             c = globals['isolateStep'] ~= #hoop.nails / 2 and #hoop.nails or #hoop.nails / 2
-            if globals['nailWidth'] > 0 then
+            if hoop.nailRadius > 0 then
                 c = c * 4
             end
             nukeui:label("Cycles: " .. gcd(#hoop.nails, globals['isolateStep']))
         else
-            c = (globals['nailWidth'] > 0 and 4 or 1) * (c * (c - 1)) / 2
+            c = (hoop.nailRadius > 0 and 4 or 1) * (c * (c - 1)) / 2
         end
         nukeui:layoutRow('dynamic', 35, 1)
         -- nukeui:label("Max Strings: " .. c)

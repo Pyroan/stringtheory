@@ -1,9 +1,4 @@
 globals = {
-    -- hoop settings
-    hoopRadius = 350, -- inner radius of the circle defined by the nails, in world units
-    hoopResolution = 128, -- number of nails
-    nailWidth = 5, -- radius of a nail body, in world units
-
     activeDensity = 0,
     -- Preview settings
     doIsolateStep = false,

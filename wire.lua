@@ -1,4 +1,4 @@
-String = {id, type, sourceNode, destNode, active}
+String = {id, type, sourceNode, destNode, active, color}
 
 function String:new(o, sourceNode, destNode, type, active)
     o = o or {}
@@ -9,6 +9,12 @@ function String:new(o, sourceNode, destNode, type, active)
     o.sourceNode = sourceNode
     o.destNode = destNode
     o.active = active or true
+    o.color = {
+        r = 0,
+        g = 0,
+        b = 0,
+        a = 1
+    }
     return o
 end
 
@@ -66,6 +72,16 @@ function String:draw(x, y, nailRadius, ppu, canvas)
     y1 = y1 + y
     x2 = x2 + x
     y2 = y2 + y
+    -- unnecessary fancy color lerping
+    -- if canvas == nil then
+    --     local oldColor = {love.graphics.getColor()}
+    --     -- what ethe fuck
+    --     print(self.color.r, self.color.g, self.color.b, self.color.a)
+    --     love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.color.a)
+    --     love.graphics.line(x1, y1, x2, y2)
+    --     love.graphics.setColor(oldColor)
+    -- else
     love.graphics.line(x1, y1, x2, y2)
+    -- end
     return true
 end
