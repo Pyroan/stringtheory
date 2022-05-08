@@ -39,6 +39,10 @@ function ui.update(delta)
         end
         -- TODO evaluator configuration
         nukeui:layoutRow('dynamic', 25, 1)
+        nukeui:layoutRow('dynamic', 25, 1)
+        nukeui:label("Volatility: " .. globals['volatility'])
+        globals['volatility'] = nukeui:slider(0, globals['volatility'], 10, 1)
+        nukeui:layoutRow('dynamic', 25, 1)
         --- set initial temp, iterations per temp, temp decease function, etc.
         -- nail/hoop params
         nukeui:layoutRow('dynamic', 25, 1)
@@ -54,6 +58,19 @@ function ui.update(delta)
                 math.floor(globals['hoopResolution'] / 2), 1, 1)
         end
 
+        nukeui:label("Image transparency: " .. math.floor(globals['imageTransparency'] * 100) .. "%")
+        globals['imageTransparency'] = nukeui:slider(0, globals['imageTransparency'], 1, 0.01)
+
+    end
+    nukeui:windowEnd()
+
+    if nukeui:windowBegin('Evaluator Preview', love.graphics.getWidth() - 300, 0, 300, love.graphics.getHeight(),
+        'border', 'minimizable', 'title') then
+        local winX, winY, winW, winH = nukeui:windowGetBounds()
+        nukeui:layoutRow('dynamic', 15, 1)
+        nukeui:label(string.format("Current Error: %.4f%%", evaluator.currentError * 100))
+        nukeui:label(string.format("Temperature: %.4f", evaluator.temperature))
+        -- debug info
         -- string counts/cycles
         local c = globals['hoopResolution']
         if globals['doIsolateStep'] then
@@ -65,10 +82,6 @@ function ui.update(delta)
         else
             c = (globals['nailWidth'] > 0 and 4 or 1) * (c * (c - 1)) / 2
         end
-        nukeui:label("Image transparency: " .. math.floor(globals['imageTransparency'] * 100) .. "%")
-        globals['imageTransparency'] = nukeui:slider(0, globals['imageTransparency'], 1, 0.01)
-
-        -- debug info
         nukeui:layoutRow('dynamic', 35, 1)
         -- nukeui:label("Max Strings: " .. c)
         -- nukeui:label("Active Strings: " .. hoop.stringCount, 'wrap' --[[,hoop.stringCount == c and '#FFFFFF' or '#FF0000']] )
@@ -77,20 +90,10 @@ function ui.update(delta)
         nukeui:layoutRow('dynamic', 35, 1)
 
         nukeui:label("FPS: " .. love.timer.getFPS())
-
-    end
-    nukeui:windowEnd()
-
-    if nukeui:windowBegin('Evaluator Preview', love.graphics.getWidth() - 300, 0, 300, love.graphics.getHeight(),
-        'border', 'minimizable', 'title') then
-        local winX, winY, winW, winH = nukeui:windowGetBounds()
-        nukeui:layoutRow('dynamic', 15, 1)
-        nukeui:label(string.format("Current Error: %.4f%%", evaluator.currentError * 100))
-        nukeui:label(string.format("Temperature: %.4f", evaluator.temperature))
         -- target image
-        nukeui:image(scaledIm, winX, winY + 105, winW, winW)
+        nukeui:image(scaledIm, winX, winY + 145, winW, winW)
         -- stringCanvas image
-        nukeui:image(love.graphics.newImage(evaluator.currentImageData), winX, winY + winW + 105, winW, winW) -- this is gonna be icky and slow.
+        nukeui:image(love.graphics.newImage(evaluator.currentImageData), winX, winY + winW + 145, winW, winW) -- this is gonna be icky and slow.
         -- error image
 
         -- error graph
