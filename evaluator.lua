@@ -49,6 +49,7 @@ end
 
 function evaluator.reset()
     evaluator.temperature = globals['initialTemp']
+    evaluator.currentError = 1
 end
 
 function evaluator.update(delta)
