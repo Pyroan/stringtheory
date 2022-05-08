@@ -53,7 +53,7 @@ end
 
 function evaluator.update(delta)
     if evaluator.temperature <= 0.00001 then
-
+        appState.setState('paused')
         return
     end
     if appState.getState() ~= 'running' then
@@ -62,7 +62,8 @@ function evaluator.update(delta)
     canvasPPU = (2 * globals['hoopRadius']) / math.min(evaluator.stringCanvas:getDimensions())
     -- get a neighbor.
     local old = hoop.stringState
-    hoop.stringState = hoop.stringState:neighbor()
+    hoop.stringState = hoop.stringState:neighbor(math.floor(
+        math.random(1, evaluator.temperature * globals['volatility'])))
     -- generate our imagedata for it
     love.graphics.setCanvas(evaluator.stringCanvas)
     love.graphics.clear(0, 0, 0, 1)
@@ -71,7 +72,7 @@ function evaluator.update(delta)
         evaluator.stringCanvas:getWidth() / 2)
 
     love.graphics.setLineWidth(globals['stringWidth'] * canvasPPU)
-    love.graphics.setColor(0, 0, 0, 1)
+    love.graphics.setColor(0, 0, 0, 0.5)
     hoop.draw(evaluator.stringCanvas:getWidth() / 2, evaluator.stringCanvas:getHeight() / 2, globals['nailWidth'],
         canvasPPU, evaluator.stringCanvas)
 
@@ -84,8 +85,8 @@ function evaluator.update(delta)
     -- want to accept it
     local newError = evaluator.getError(evaluator.currentImageData, evaluator.targetImageData)
     local dE = newError - evaluator.currentError
-    local p = math.exp(-dE / evaluator.temperature)
-    if dE <= 0 or love.math.random() > p then
+    local p = math.exp(-dE * 1000000 / evaluator.temperature)
+    if dE <= 0 or love.math.random() < p then
         if dE > 0 then
             print(dE, p)
         end
@@ -97,7 +98,7 @@ function evaluator.update(delta)
     -- decrease temperature, if it's time.
     itersThisTemp = itersThisTemp + 1
     if itersThisTemp >= globals['iterationsPerTemp'] then
-        evaluator.temperature = evaluator.tempDecreaseFunc(evaluator.temperature, 0.2)
+        evaluator.temperature = evaluator.tempDecreaseFunc(evaluator.temperature, 0.01)
         itersThisTemp = 0
     end
 
@@ -121,7 +122,15 @@ function evaluator.getError(currentImageData, targetImageData)
                 -- only taking one return value is ok for grayscale since all components should be the same.
                 local t = targetImageData:getPixel(i, j)
                 local g = currentImageData:getPixel(i, j)
-                totalError = totalError + math.abs(g - t)
+                local err = g - t
+                -- if err < 0 then
+                --     -- pixel is too dark, which is worse than being too light.
+                --     err = math.sqrt(math.abs(err))
+                -- end
+                -- pixels closer to the center matter more
+                -- err = err *
+                --           (1 - math.pow(math.sqrt(xOff * xOff + yOff * yOff) / (globals['hoopRadius'] * canvasPPU), 10))
+                totalError = totalError + math.abs(err)
             end
         end
     end

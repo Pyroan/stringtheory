@@ -4,12 +4,19 @@ A thing for turning strings into pictures
 Ideally using Simulated Annealing, but we'll see if I can even get that far.
 
 ## TODO
-- **Next step**: generate evaluation canvas image every frame & calculate error
-- Initialize random string states
+- **Next step**: Tweaks
+  - maybe mess with the evaluation algorithm so it's nicer to colors that are closer together and meaner to ones that are further away (it's already like that, but even more so)
+  - treat the wires as translucent so we can fake more subtle distinctions in value
+  - have a value being too low punished more strongly than being too high
+  - favor states which use fewer strings but result in nearly the same error.
+    - this will hopefully stop the overall image from getting to dark as the agent can't figure out the difference when an extraneous string is turned off
+  - a lot of time is currently wasted on impossible wires...
+  - try setting it to find/prioritize edges (oh boy time to write a sobel filter)
 - Load/Save StringStates
 - Process a StringState into a series of instructions so the images can be made in real life.
-- Actual evaluation
-- The Annealing Part
+- Usability Improvements
+- Aesthetic improvements.
+- Let the user make edits/toggle individual strings/maybe indicate "important" area of an image.
 
 Each string is identified by its source node (always less than its destination node), its destination node, and type
 
