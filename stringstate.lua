@@ -1,3 +1,4 @@
+-- flux = require "ext.flux"
 require "wire"
 
 ---@field strings table
@@ -65,6 +66,20 @@ function StringState:neighbor(maxDistance)
     for i = 1, math.random(1, maxDistance) do
         local n = math.random(1, #self.strings)
         neighbor.strings[n].active = not neighbor.strings[n].active
+        if neighbor.strings[n].active then
+            neighbor.strings[n].color = {
+                r = 1,
+                g = 1,
+                b = 1,
+                a = 1
+            }
+            -- flux.to(neighbor.strings[n].color, 1, {
+            --     r = 0,
+            --     g = 0,
+            --     b = 0,
+            --     a = 1
+            -- })
+        end
     end
     return neighbor
 end
@@ -74,10 +89,8 @@ end
 ---@return integer
 function StringState:draw(x, y, nailRadius, ppu, canvas)
     local stringCount = 0
-    -- love.graphics.setColor(HSL(angle / (2 * math.pi), 1, 0.5, 1))
     for s = 1, #self.strings do
         if not globals['doIsolateStep'] or getStringStep(self.strings[s], #self.nodes) == globals['isolateStep'] then
-            -- love.graphics.setColor(HSL(strings[s].type/5 -0.2, 1, 0.5, 1))
             if self.strings[s]:draw(x, y, nailRadius, ppu, canvas) then
                 stringCount = stringCount + 1
             end

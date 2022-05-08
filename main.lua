@@ -1,3 +1,4 @@
+-- flux = require "ext.flux"
 local state = require "appstate"
 require "evaluator"
 require "globals"
@@ -6,17 +7,19 @@ require "imageprocessing"
 require "ui"
 require "util"
 
+local angle = 0
+
 function love.load()
     love.window.setMode(1600, 900, {
         resizable = true
     })
     love.window.setTitle("Vi's String Theory")
     love.graphics.setDefaultFilter("nearest")
-    love.graphics.setBackgroundColor(love.math.colorFromBytes(131, 59, 142))
-    -- love.graphics.setBackgroundColor(1, 1, 1, 1)
+    -- love.graphics.setBackgroundColor(love.math.colorFromBytes(131, 59, 142))
+    love.graphics.setBackgroundColor(1, 1, 1, 1)
 
     ui.load()
-    hoop.load(globals['hoopResolution'], globals['hoopRadius'], globals['nailWidth'], globals['activeDensity'])
+    hoop.load(globals['activeDensity'])
 
     -- image setup
     imdata = love.image.newImageData(globals['imageName'])
@@ -39,9 +42,17 @@ function love.load()
 end
 
 function love.update(delta)
+    -- flux.update(delta)
+    love.graphics.setBackgroundColor(HSL(angle, 1, 0.9, 1))
     ui.update(delta)
-    hoop.update(delta)
     evaluator.update(delta)
+    -- change the background color, for fun.
+    if (state.getState('running')) then
+        angle = angle + (1 / (60 * 2) * delta)
+    end
+    if angle >= 1 then
+        angle = angle - 1
+    end
 end
 
 function love.draw()
@@ -49,7 +60,7 @@ function love.draw()
     -- globals['ppu'] = (2 * globals['hoopRadius']) / math.min(love.graphics.getDimensions())
     love.graphics.setColor(1, 1, 1, globals['imageTransparency'])
     -- align/scale image so that it's the same size/location as the hoop.
-    local imScaleFactor = 2 * globals['hoopRadius'] / im:getWidth()
+    local imScaleFactor = 2 * hoop.radius / im:getWidth()
     imScaleFactor = imScaleFactor / globals['ppu']
     local imX = globals['xOffset'] + (love.graphics.getWidth() - imScaleFactor * im:getWidth()) / 2
     local imY = globals['yOffset'] + (love.graphics.getHeight() - imScaleFactor * im:getHeight()) / 2
@@ -58,7 +69,7 @@ function love.draw()
     -- draw the main preview of the hoop
     love.graphics.setColor(0, 0, 0, 0.4)
     hoop.draw(globals['xOffset'] + love.graphics.getWidth() / 2, globals['yOffset'] + love.graphics.getHeight() / 2,
-        globals['nailWidth'], globals['ppu'])
+        globals['ppu'])
     love.graphics.setColor(1, 1, 1, 1)
 
     ui.draw()

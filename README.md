@@ -16,6 +16,7 @@ A thing for turning strings into pictures
 - Process a StringState into a series of instructions so the images can be made in real life.
 - Usability Improvements
 - Aesthetic improvements.
+- Massive amounts of refactoring this codebase is a big plate of spaghetti.
 - Let the user make edits/toggle individual strings/maybe indicate "important" area of an image.
 
 Each string is identified by its source node (always less than its destination node), its destination node, and type

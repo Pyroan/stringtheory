@@ -4,21 +4,22 @@ require "util"
 require "wire"
 
 hoop = {
+    radius = 350, -- inner radius of the circle defined by the nails, in world units
+    resolution = 128, -- number of nails
     stringCount = 0,
-    nailRadius = 1,
+    nailRadius = 5, -- radius of a nail body, in world units
     nails = {},
     stringState = nil,
     initialStringState = nil
 }
 --- Initialize the "hoop" - the polygon of nails and strings that we're drawing.
----@param nailResolution integer
----@param hoopRadius integer
 ---@param nailRadius integer
+---@param activeDensity number "percentage of strings to active for a random stringState"
 ---@param angle number
-function hoop.load(nailResolution, hoopRadius, nailRadius, activeDensity, angle)
+function hoop.load(activeDensity, angle)
     angle = angle or 0
     activeDensity = activeDensity or 1
-    hoop.nails = hoop.loadNails(nailResolution, hoopRadius, nailRadius, angle)
+    hoop.nails = hoop.loadNails(angle)
     hoop.stringState = StringState:newRandom(activeDensity, hoop.nails)
     hoop.initialStringState = hoop.stringState:clone()
 end
@@ -29,12 +30,9 @@ function hoop.reset()
 end
 
 function hoop.update(delta)
-    -- if state.getState() == 'running' then
-    --     hoop.stringState = hoop.stringState:neighbor()
-    -- end
 end
 
-function hoop.onHoopRadiusChanged()
+function hoop.onRadiusChanged()
     error("Not yet implemented!")
 end
 
@@ -50,36 +48,36 @@ end
 --- will draw to a canvas, if it's provided.
 ---@param nailRadius integer
 ---@param canvas love.graphics.Canvas
-function hoop.draw(x, y, nailRadius, ppu, canvas)
+function hoop.draw(x, y, ppu, canvas)
     if canvas then
         love.graphics.setCanvas(canvas)
     end
-    hoop.drawNails(x, y, nailRadius, ppu, canvas)
-    hoop.stringCount = hoop.stringState:draw(x, y, nailRadius, ppu, canvas)
+    hoop.drawNails(x, y, ppu, canvas)
+    hoop.stringCount = hoop.stringState:draw(x, y, hoop.nailRadius, ppu, canvas)
     love.graphics.setCanvas()
 end
 
 --- TODO `nails` should reallly be just part of stringState if i'm being honest 
-function hoop.loadNails(resolution, hoopRadius, nailRadius, angle)
+function hoop.loadNails(angle)
     angle = angle or 0
     local nails = hoop.stringState and hoop.stringState.nodes or {}
-    for i = 1, resolution do
-        local theta = i * 2 * math.pi / resolution + angle
+    for i = 1, hoop.resolution do
+        local theta = i * 2 * math.pi / hoop.resolution + angle
         nails[i] = {
             id = i,
-            x = (hoopRadius + nailRadius) * math.cos(theta),
-            y = (hoopRadius + nailRadius) * math.sin(theta)
+            x = (hoop.radius + hoop.nailRadius) * math.cos(theta),
+            y = (hoop.radius + hoop.nailRadius) * math.sin(theta)
         }
     end
     return nails
 end
 
-function hoop.drawNails(x, y, nailRadius, ppu, canvas)
+function hoop.drawNails(x, y, ppu, canvas)
     oldColor = {love.graphics.getColor()}
     love.graphics.setColor(0, 0, 0, 1)
     for i = 1, #hoop.nails do
         local x1, y1 = worldToScreenSpace(hoop.nails[i].x, hoop.nails[i].y, ppu, canvas)
-        love.graphics.circle("fill", x1 + x, y1 + y, nailRadius / ppu)
+        love.graphics.circle("fill", x1 + x, y1 + y, hoop.nailRadius / ppu)
         -- love.graphics.print(i, nails[i].x, nails[i].y)
     end
     love.graphics.setColor(oldColor)
