@@ -1,0 +1,4 @@
+# Omit extra test images
+data/*
+!monalisa.bmp
+!moon.png
