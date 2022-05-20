@@ -73,7 +73,7 @@ function evaluator.update(delta)
         evaluator.stringCanvas:getWidth() / 2)
 
     love.graphics.setLineWidth(globals['stringWidth'] * canvasPPU)
-    love.graphics.setColor(0, 0, 0, 0.5)
+    love.graphics.setColor(0, 0, 0, 0.2)
     hoop.draw(evaluator.stringCanvas:getWidth() / 2, evaluator.stringCanvas:getHeight() / 2, canvasPPU,
         evaluator.stringCanvas)
 
