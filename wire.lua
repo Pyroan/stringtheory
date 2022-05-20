@@ -1,6 +1,6 @@
-String = {id, type, sourceNode, destNode, active, color}
+Wire = {id, type, sourceNode, destNode, active, color}
 
-function String:new(o, sourceNode, destNode, type, active)
+function Wire:new(o, sourceNode, destNode, type, active)
     o = o or {}
     setmetatable(o, self)
     self.__index = self
@@ -22,7 +22,7 @@ end
 --- the specific line is based on `self.type`
 ---@param nailRadius integer "the radius of the nail (in pixels)"
 ---@return boolean "`true` if the string was actually drawn, `false` otherwise"
-function String:draw(x, y, nailRadius, ppu, canvas)
+function Wire:draw(x, y, nailRadius, ppu, canvas)
     if (nailRadius <= 0 and self.type ~= 1) or not self.active then
         return false
     end

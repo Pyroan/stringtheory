@@ -4,6 +4,10 @@ require("globals")
 
 ui = {}
 local nukeui
+local failedToLoadFile = false
+local outputFile = {
+    value = "output.json"
+}
 
 function ui.load()
     nukeui = nuklear.newUI()
@@ -12,6 +16,41 @@ end
 function ui.update(delta)
     nukeui:frameBegin()
     if nukeui:windowBegin('Settings', 0, 0, 180, love.graphics.getHeight(), 'border', 'minimizable', 'title') then
+        -- Save state
+        nukeui:layoutRow('dynamic', 30, 1)
+        local s = nukeui:edit('field', outputFile)
+        if s == 'deactivated' then
+            -- add file extension if it's not there
+            -- also should prob sanitize input. won't tho.
+            if outputFile.value:sub(#outputFile.value - 4) ~= ".json" then
+                outputFile.value = outputFile.value .. ".json"
+            end
+            failedToLoadFile = false
+            print("Output file set to " .. outputFile.value)
+        end
+        nukeui:layoutRow('dynamic', 20, 2)
+        if nukeui:button(globals["justSaved"] and "Saved!" or "Save") then
+
+            local f = io.open(outputFile.value, "w")
+            f:write(hoop.stringState:serialize())
+            f:close()
+            print("Logged state to ./" .. outputFile.value)
+        end
+        if nukeui:button("Load") then
+            --- TODO don't load image without asking first, if we haven't saved yet.
+            local f = io.open(outputFile.value, "r")
+            if not f then
+                failedToLoadFile = true
+            else
+                local json = f:read('*all')
+                hoop.stringState = StringState:newFromJSON(json)
+                hoop.initialStringState = hoop.stringState
+            end
+        end
+        nukeui:layoutRow('dynamic', 20, 1)
+        if failedToLoadFile then
+            nukeui:label("File not found!", 'wrap', "#ff0000")
+        end
         -- play controls
         nukeui:layoutRow('dynamic', 35, 3)
         local runSelected = state.getState() == 'running'
