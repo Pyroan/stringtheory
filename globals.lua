@@ -19,5 +19,6 @@ globals = {
     volatility = 2, -- max number of strings that can be changed per iteration * `temperature`
     shadeDetail = 0.8, -- 1-the opacity used for the wires in the evaluator. (by default 0.5 seems to work best, creates some nasty artifacts when set too high.)
 
-    totalEvaluationTime = 0
+    totalEvaluationTime = 0,
+    justSaved = false -- true if nothing has changed since the last time we saved the state.
 }
