@@ -149,7 +149,8 @@ end
 function StringState:draw(x, y, nailRadius, ppu, canvas)
     local stringCount = 0
     for s = 1, #self.strings do
-        if not globals['doIsolateStep'] or getStringStep(self.strings[s], #self.nodes) == globals['isolateStep'] then
+        if not globals['doIsolateStep'] or canvas or getStringStep(self.strings[s], #self.nodes) ==
+            globals['isolateStep'] then
             if self.strings[s]:draw(x, y, nailRadius, ppu, canvas) then
                 stringCount = stringCount + 1
             end
