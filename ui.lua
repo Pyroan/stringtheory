@@ -69,7 +69,6 @@ function ui.update(delta)
             evaluator.reset()
             globals['totalEvaluationTime'] = 0
         end
-        --- TODO Save/Load/Generate random StringState
         -- set string density (% of strings to make active), add a "generate" button, etc
         nukeui:layoutRow('dynamic', 25, 1)
         nukeui:label(string.format("Active Density: %d%%", math.floor(globals['activeDensity'] * 100)))
@@ -83,14 +82,21 @@ function ui.update(delta)
         nukeui:label("Volatility: " .. globals['volatility'])
         globals['volatility'] = nukeui:slider(0, globals['volatility'], 10, 1)
         nukeui:layoutRow('dynamic', 25, 1)
-        --- set initial temp, iterations per temp, temp decease function, etc.
+        --- todo set initial temp, iterations per temp, temp decease function, etc.
         -- nail/hoop params
         nukeui:layoutRow('dynamic', 25, 1)
         nukeui:label("Nail Radius: " .. hoop.nailRadius)
         hoop.nailRadius = nukeui:slider(0, hoop.nailRadius, 100, 1)
         nukeui:label("Hoop Radius: " .. hoop.radius)
-        hoop.radius = nukeui:slider(0, hoop.radius, love.graphics.getHeight() / 2, 1)
-        hoop.resolution = nukeui:property('Nails', 2, hoop.resolution, 128, 1, 1)
+        ui:slider(hoop.radius, 0, love.graphics.getHeight() / 2, 1, hoop.onRadiusChanged)
+
+        local t = {
+            value = hoop.resolution
+        }
+        local changed = nukeui:property('Nails', 2, t, 128, 1, 1)
+        if changed then
+            hoop.onNailResolutionChanged(t.value)
+        end
         -- isolated step
         globals['doIsolateStep'] = nukeui:checkbox("Isolate Step", globals['doIsolateStep'])
         if globals['doIsolateStep'] then
@@ -142,6 +148,20 @@ function ui.update(delta)
     end
     nukeui:windowEnd()
     nukeui:frameEnd()
+end
+
+-- wack.
+-- param is what we're changing, min and max are the range of possible values, and callback
+-- is a function to call once the change has been made
+-- personally i think it's weird that nuklear doesn't handle things like this by default but
+function ui:slider(param, min, max, step, callback)
+    local v = {
+        value = param
+    }
+    local changed = nukeui:slider(min, v, max, step)
+    if changed then
+        callback(v.value)
+    end
 end
 
 function ui.draw()
