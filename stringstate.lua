@@ -38,12 +38,14 @@ function StringState:newRandom(activeDensity, nodes)
     return newState
 end
 
---- Generates a state from a string representing the 
---- on/off values of each string.
+--- Generates a state from a json string generated with StringState:serialize().
 --- no I do not know how that spec works yet 
 ---@param stringState string
 ---@return table
-function StringState:newFromState(o, stringState)
+function StringState:newFromState(o, json)
+end
+
+function StringState:serialize()
 end
 
 function StringState:clone()
@@ -100,10 +102,6 @@ function StringState:draw(x, y, nailRadius, ppu, canvas)
     return stringCount
 end
 
-function StringState:toString()
-    return ''
-end
-
 --- return the minimum distance (in nail ids) to get from `string`s source node to its destination node
 ---@param string table
 function getStringStep(string, numberOfNodes)
@@ -113,3 +111,4 @@ function getStringStep(string, numberOfNodes)
     end
     return s
 end
+

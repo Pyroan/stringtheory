@@ -55,3 +55,34 @@ function shuffle(tbl)
     end
     return tbl
 end
+
+-- returns a string in the format HH:MM:SS for `time` seconds
+function timestring(time)
+    function timestring(time)
+        local tcopy = time
+        local str = ""
+        local h, m, s
+        h = math.floor(tcopy / 3600)
+        tcopy = tcopy - (h * 3600)
+        m = math.floor(tcopy / 60)
+        tcopy = tcopy - (m * 60)
+        s = tcopy
+        if h > 0 then
+            str = str .. h .. ":"
+        end
+        if m > 0 or h > 0 then
+            if m < 10 then
+                str = str .. "0"
+            end
+            str = str .. m .. ":"
+        end
+        if s < 10 then
+            str = str .. '0'
+        end
+        str = str .. math.floor(s)
+        if m <= 0 and h <= 0 then
+            str = str .. 's'
+        end
+        return str
+    end
+end

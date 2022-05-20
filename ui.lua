@@ -28,6 +28,7 @@ function ui.update(delta)
             state.setState("idle")
             hoop.reset()
             evaluator.reset()
+            globals['totalEvaluationTime'] = 0
         end
         --- TODO Save/Load/Generate random StringState
         -- set string density (% of strings to make active), add a "generate" button, etc
@@ -89,11 +90,12 @@ function ui.update(delta)
             'wrap')
         nukeui:layoutRow('dynamic', 35, 1)
 
-        nukeui:label("FPS: " .. love.timer.getFPS())
+        nukeui:label(string.format("Total Render Time: %s\nFPS: %s", timestring(globals.totalEvaluationTime),
+            love.timer.getFPS()))
         -- target image
-        nukeui:image(scaledIm, winX, winY + 145, winW, winW)
+        nukeui:image(scaledIm, winX, winY + 155, winW, winW)
         -- stringCanvas image
-        nukeui:image(love.graphics.newImage(evaluator.currentImageData), winX, winY + winW + 145, winW, winW) -- this is gonna be icky and slow.
+        nukeui:image(love.graphics.newImage(evaluator.currentImageData), winX, winY + winW + 155, winW, winW) -- this is gonna be icky and slow.
         -- error image
 
         -- error graph
@@ -110,7 +112,7 @@ end
 --[[
     strictly speaking these shouldn't live here, since they're
     LOVE callbacks and i think those should always live in `main.lua`.
-    oh well.
+    i didn't want to write a wrapper for a wrapper, so here we are.
 ]]
 
 function love.keypressed(key, scancode, isrepeat)
