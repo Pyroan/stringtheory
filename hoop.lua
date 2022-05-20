@@ -32,15 +32,26 @@ end
 function hoop.update(delta)
 end
 
-function hoop.onRadiusChanged()
-    error("Not yet implemented!")
+function hoop.onRadiusChanged(newValue)
+    hoop.radius = newValue
+    -- this SHOULDN'T require us to reload our stringstate necessarily.
+    -- but right now it does because strings currently store the location of their nails
+    -- and not just their id, like they should.
+    hoop.stringState.nodes = {}
+    hoop.nails = hoop.loadNails()
+    hoop.stringState = StringState:newRandom(0, hoop.nails)
 end
 
-function hoop.onNailResolutionChanged()
-    error("Not yet implemented!")
+function hoop.onNailResolutionChanged(newValue)
+    hoop.resolution = newValue
+    -- this WILL require us to reload our stringstate, since it's
+    -- useless if it doesn't have the same number of nodes.
+    hoop.stringState.nodes = {}
+    hoop.nails = hoop.loadNails()
+    hoop.stringState = StringState:newRandom(0, hoop.nails)
 end
 
-function hoop.onNailRadiusChanged()
+function hoop.onNailRadiusChanged(newValue)
     error("Not yet implemented!")
 end
 

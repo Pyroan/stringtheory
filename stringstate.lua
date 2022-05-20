@@ -53,7 +53,7 @@ function StringState:newFromJSON(jsonString)
     hoop.resolution = o.hoopResolution
 
     hoop.nails = o.nodes -- i really need to refactor hoop and stringstate.
-    hoop.radius = o.hoopRadius
+    hoop.radius = o.hoopRadius -- skip the custom setters, we don't want to force a reload.
     hoop.nailRadius = o.nailRadius
     -- set nodes
     local newState = StringState:new({}, o.nodes)
