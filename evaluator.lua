@@ -37,6 +37,7 @@ function evaluator.load(targetImageData)
     print(string.format("Target dimensions: %d %d", evaluator.targetImageData:getDimensions()))
 
     evaluator.temperature = globals['initialTemp']
+    evaluator.currentError = 1
     -- string canvas setup
     -- the string canvas isn't actually drawn to the screen, but generated for the sake of our error evaluation.
     -- unfortunately this means that every string is drawn twice per frame.
@@ -48,8 +49,10 @@ function evaluator.load(targetImageData)
 end
 
 function evaluator.reset()
-    evaluator.temperature = globals['initialTemp']
-    evaluator.currentError = 1
+
+    evaluator.load(evaluator.targetImageData)
+    -- evaluator.temperature = globals['initialTemp']
+    -- evaluator.currentError = 1
 end
 
 function evaluator.update(delta)
@@ -73,7 +76,7 @@ function evaluator.update(delta)
         evaluator.stringCanvas:getWidth() / 2)
 
     love.graphics.setLineWidth(globals['stringWidth'] * canvasPPU)
-    love.graphics.setColor(0, 0, 0, 0.2)
+    love.graphics.setColor(0, 0, 0, 1 - globals['shadeDetail'])
     hoop.draw(evaluator.stringCanvas:getWidth() / 2, evaluator.stringCanvas:getHeight() / 2, canvasPPU,
         evaluator.stringCanvas)
 

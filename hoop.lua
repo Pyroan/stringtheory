@@ -40,6 +40,7 @@ function hoop.onRadiusChanged(newValue)
     hoop.stringState.nodes = {}
     hoop.nails = hoop.loadNails()
     hoop.stringState = StringState:newRandom(0, hoop.nails)
+    hoop.initialStringState = hoop.stringState:clone()
 end
 
 function hoop.onNailResolutionChanged(newValue)
@@ -49,6 +50,7 @@ function hoop.onNailResolutionChanged(newValue)
     hoop.stringState.nodes = {}
     hoop.nails = hoop.loadNails()
     hoop.stringState = StringState:newRandom(0, hoop.nails)
+    hoop.initialStringState = hoop.stringState:clone()
 end
 
 function hoop.onNailRadiusChanged(newValue)

@@ -75,11 +75,15 @@ function Wire:draw(x, y, nailRadius, ppu, canvas)
     -- unnecessary fancy color lerping
     -- if canvas == nil then
     --     local oldColor = {love.graphics.getColor()}
-    --     -- what ethe fuck
+    --
     --     print(self.color.r, self.color.g, self.color.b, self.color.a)
     --     love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.color.a)
     --     love.graphics.line(x1, y1, x2, y2)
     --     love.graphics.setColor(oldColor)
+    -- else
+    -- if canvas == nil then
+    --     local oldColor = {love.graphics.getColor()}
+
     -- else
     love.graphics.line(x1, y1, x2, y2)
     -- end

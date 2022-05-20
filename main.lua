@@ -21,21 +21,26 @@ function love.load()
     ui.load()
     hoop.load(globals['activeDensity'])
 
+    initImage()
+end
+
+-- i don't know where to put this yet.
+function initImage()
     -- image setup
     imdata = love.image.newImageData(globals['imageName'])
     im = love.graphics.newImage(imdata)
-    print("Image format: " .. imdata:getFormat())
+    -- print("Image format: " .. imdata:getFormat())
     -- convert image to black and white if it isn't already.
     imdata = toGrayscale(imdata)
-    -- print sample of image so we know things are working.
-    print("Image sample:")
-    for i = 1, imdata:getWidth(), imdata:getWidth() / 7 do
-        local s = "\t"
-        for j = 1, imdata:getHeight(), imdata:getHeight() / 7 do
-            s = s .. string.format("[%.3f]", imdata:getPixel(i, j)) .. ' '
-        end
-        print(s)
-    end
+    -- -- print sample of image so we know things are working.
+    -- print("Image sample:")
+    -- for i = 1, imdata:getWidth(), imdata:getWidth() / 7 do
+    --     local s = "\t"
+    --     for j = 1, imdata:getHeight(), imdata:getHeight() / 7 do
+    --         s = s .. string.format("[%.3f]", imdata:getPixel(i, j)) .. ' '
+    --     end
+    --     print(s)
+    -- end
     imdata = scaleImageData(imdata, globals['evaluatorResolution'], globals['evaluatorResolution'])
     scaledIm = love.graphics.newImage(imdata)
     evaluator.load(imdata:clone())
