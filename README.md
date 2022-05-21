@@ -18,6 +18,7 @@ Each string is identified by its source node (always a smaller id than its desti
 - Can also only "correctly" handle images with square aspect ratios
   - Will scale non-square images to be square, rather than crop.
 - Hoop size is clipped to the half the height of the screen, which is arbitrary and unnecessary.
+- Is almost certainly extremely buggy
 
 
 ## Requirements
