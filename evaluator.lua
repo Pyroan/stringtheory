@@ -92,7 +92,7 @@ function evaluator.update(delta)
     local p = math.exp(-dE * 1000000 / evaluator.temperature)
     if dE <= 0 or love.math.random() < p then
         if dE > 0 then
-            print(string.format("accepted greater err:: diff: %.4g%%, %.4f%% chance of acceptance", dE * 100, p * 100))
+            print(string.format("accepted err+%.4g%%; %.4f%% chance of acceptance", dE * 100, p * 100))
         end
         -- accept it
         evaluator.currentError = newError

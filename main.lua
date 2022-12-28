@@ -53,7 +53,7 @@ function love.update(delta)
     evaluator.update(delta)
     -- change the background color, for fun.
     if state.getState() == 'running' then
-        angle = angle + (1 / (60 * 2) * delta)
+        angle = angle + (1 / (60 * 60) * delta)
         -- update total evaluation time.
         globals.totalEvaluationTime = globals.totalEvaluationTime + delta
     end
