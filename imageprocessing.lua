@@ -53,6 +53,14 @@ function toGrayscale(imageData)
     return id
 end
 
+--- returns the gradient of imageData using a sobel filter.
+--- if i gotta do more convolving later this is where i'm gonna have to do it :\
+function sobel(imageData)
+    local kernel = {{
+        --TODO preloading webpages doesn't work lmao
+    }}
+end
+
 --- return the grayscale value (0..1 inclusive)
 --- of the given rgb pixel
 function luminance(r, g, b)

@@ -17,3 +17,18 @@
 - Aesthetic improvements.
 
 - Let the user make edits/toggle individual strings/maybe indicate "important" area of an image.
+
+
+# Branch stuff lol
+ok hi in this branch i want to completely overhaul everything to instead evaluate the fitness for each individual line, and then turn off all lines below a settable threshold.
+This involves basically rewriting the evaluator and UI from scratch and implementing
+a line drawing algorithm instead of drawing to canvas, but should give us better results AND faster ones too. Hopefully.
+
+(we don't need to recalculate the error to adjust the threshold, and it'd be silly to. We should just process it all and then adjust when the threshold changes.)
+
+also i reallly wanna do that thing where i use a sobel filter to give more weight to areas
+with higher detail but i'm soooo lazyyyy
+
+
+I got it basically working so here's some more stuff to try:
+- "fuzzy" threshold - basically make it so that strings that fail the threshold still have a chance of getting turned on and vice versa.

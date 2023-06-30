@@ -26,6 +26,13 @@ function Wire:draw(x, y, nailRadius, ppu, canvas)
     if (nailRadius <= 0 and self.type ~= 1) or not self.active then
         return false
     end
+    local x1, y1, x2, y2 = self:getEndpoints(x,y,nailRadius,ppu,canvas)
+    love.graphics.line(x1, y1, x2, y2)
+    -- end
+    return true
+end
+
+function Wire:getEndpoints(x,y,nailRadius,ppu,canvas)
     local source = self.sourceNode
     local dest = self.destNode
     local x1, x2, y1, y2
@@ -72,20 +79,5 @@ function Wire:draw(x, y, nailRadius, ppu, canvas)
     y1 = y1 + y
     x2 = x2 + x
     y2 = y2 + y
-    -- unnecessary fancy color lerping
-    -- if canvas == nil then
-    --     local oldColor = {love.graphics.getColor()}
-    --
-    --     print(self.color.r, self.color.g, self.color.b, self.color.a)
-    --     love.graphics.setColor(self.color.r, self.color.g, self.color.b, self.color.a)
-    --     love.graphics.line(x1, y1, x2, y2)
-    --     love.graphics.setColor(oldColor)
-    -- else
-    -- if canvas == nil then
-    --     local oldColor = {love.graphics.getColor()}
-
-    -- else
-    love.graphics.line(x1, y1, x2, y2)
-    -- end
-    return true
+    return x1,y1,x2,y2
 end

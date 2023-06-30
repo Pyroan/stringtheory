@@ -97,43 +97,46 @@ function ui.update(delta)
             nukeui:label("Hoop Radius: " .. hoop.radius)
             ui:slider(hoop.radius, 0, love.graphics.getHeight() / 2, 1, hoop.onRadiusChanged)
             nukeui:layoutRow('dynamic', 25, 1)
-            nukeui:label(string.format("Active Density: %d%%", math.floor(globals['activeDensity'] * 100)))
-            globals['activeDensity'] = nukeui:slider(0, globals['activeDensity'], 1, 0.01)
-            if nukeui:button("Generate Random State") then
-                hoop.load(globals['activeDensity'])
-            end
+            -- nukeui:label(string.format("Active Density: %d%%", math.floor(globals['activeDensity'] * 100)))
+            -- globals['activeDensity'] = nukeui:slider(0, globals['activeDensity'], 1, 0.01)
+            -- if nukeui:button("Generate Random State") then
+            --     hoop.load(globals['activeDensity'])
+            -- end
 
             nukeui:groupEnd()
         end
         nukeui:layoutRow('dynamic', 200, 1)
         if nukeui:groupBegin("Eval Settings (Advanced)", 'title', 'border', 'scrollbar') then
-            nukeui:layoutRow('dynamic', 25, 2)
-            nukeui:label("iters/temp")
-            nukeui:label("initial temp")
-
-            itersPerTemp.value = itersPerTemp.value or globals['iterationsPerTemp']
-            local s, _ = nukeui:edit('field', itersPerTemp)
-            if s == 'deactivated' then
-                local n = tonumber(itersPerTemp.value)
-                if n then
-                    globals['iterationsPerTemp'] = math.floor(n)
-                    itersPerTemp.value = nil
-                    evaluator.reset()
-                end
-            end
-            initialTemp.value = initialTemp.value or globals['initialTemp']
-            s, _ = nukeui:edit('field', initialTemp)
-            if s == 'deactivated' then
-                local n = tonumber(initialTemp.value)
-                if n then
-                    globals['initialTemp'] = n
-                    initialTemp.value = nil
-                    evaluator.reset()
-                end
-            end
             nukeui:layoutRow('dynamic', 25, 1)
-            nukeui:label("Volatility: " .. globals['volatility'])
-            globals['volatility'] = nukeui:slider(0, globals['volatility'], 10, 1)
+            nukeui:label("Error Threshold: "..globals['errorThreshold'])
+            ui:slider(globals['errorThreshold'],0,0.5,0.001, evaluator.onThresholdChanged)
+            -- nukeui:label("iters/temp")
+            -- nukeui:label("initial temp")
+
+            -- itersPerTemp.value = itersPerTemp.value or globals['iterationsPerTemp']
+            -- local s, _ = nukeui:edit('field', itersPerTemp)
+            -- if s == 'deactivated' then
+            --     local n = tonumber(itersPerTemp.value)
+            --     if n then
+            --         globals['iterationsPerTemp'] = math.floor(n)
+            --         itersPerTemp.value = nil
+            --         evaluator.reset()
+            --     end
+            -- end
+            -- initialTemp.value = initialTemp.value or globals['initialTemp']
+            -- s, _ = nukeui:edit('field', initialTemp)
+            -- if s == 'deactivated' then
+            --     local n = tonumber(initialTemp.value)
+            --     if n then
+            --         globals['initialTemp'] = n
+            --         initialTemp.value = nil
+            --         evaluator.reset()
+            --     end
+            -- end
+            -- nukeui:layoutRow('dynamic', 25, 1)
+            -- nukeui:label("Volatility: " .. globals['volatility'])
+            -- globals['volatility'] = nukeui:slider(0, globals['volatility'], 10, 1)
+
 
             nukeui:layoutRow('dynamic', 25, 1)
             nukeui:label("Evaluator Resolution: " .. globals['evaluatorResolution'])
@@ -148,29 +151,29 @@ function ui.update(delta)
                 initImage()
             end
 
-            nukeui:layoutRow('dynamic', 25, 1)
-            nukeui:label('Shade Detail: ' .. math.floor(globals['shadeDetail'] * 100 + 0.5) .. "%")
-            ui:slider(globals['shadeDetail'], 0, 0.99, 0.01, function(v)
-                globals['shadeDetail'] = v
-            end)
+            -- nukeui:layoutRow('dynamic', 25, 1)
+            -- nukeui:label('Shade Detail: ' .. math.floor(globals['shadeDetail'] * 100 + 0.5) .. "%")
+            -- ui:slider(globals['shadeDetail'], 0, 0.99, 0.01, function(v)
+            --     globals['shadeDetail'] = v
+            -- end)
 
-            nukeui:label('Temperature Decrease:', 'wrap')
-            local changed = nukeui:combobox(decreaseFunc, {'linear (fast)', 'multiplicative', 'slow (quality)'})
-            if changed then
-                local func
-                if decreaseFunc.value == 1 then
-                    func = linearDecrease
-                elseif decreaseFunc.value == 2 then
-                    func = multiplicativeDecrease
-                elseif decreaseFunc.value == 3 then
-                    func = slowDecrease
-                else
-                    error("Somehow we tried to set an invalid temperature decrease function")
-                end
-                evaluator.tempDecreaseFunc = func
-            end
+            -- nukeui:label('Temperature Decrease:', 'wrap')
+            -- local changed = nukeui:combobox(decreaseFunc, {'linear (fast)', 'multiplicative', 'slow (quality)'})
+            -- if changed then
+            --     local func
+            --     if decreaseFunc.value == 1 then
+            --         func = linearDecrease
+            --     elseif decreaseFunc.value == 2 then
+            --         func = multiplicativeDecrease
+            --     elseif decreaseFunc.value == 3 then
+            --         func = slowDecrease
+            --     else
+            --         error("Somehow we tried to set an invalid temperature decrease function")
+            --     end
+            --     evaluator.tempDecreaseFunc = func
+            -- end
 
-            nukeui:groupEnd()
+            -- nukeui:groupEnd()
         end
         nukeui:layoutRow('dynamic', 200, 1)
         -- preview settings
@@ -195,8 +198,8 @@ function ui.update(delta)
     if nukeui:windowBegin('Evaluator Preview', love.graphics.getWidth() - 300, 0, 300, love.graphics.getHeight(),
         'border', 'minimizable', 'title', 'scrollbar') then
         nukeui:layoutRow('dynamic', 15, 1)
-        nukeui:label(string.format("Current Error: %.4f%%", evaluator.currentError * 100))
-        nukeui:label(string.format("Temperature: %.4f", evaluator.temperature))
+        -- nukeui:label(string.format("Current Error: %.4f%%", evaluator.currentError * 100))
+        -- nukeui:label(string.format("Temperature: %.4f", evaluator.temperature))
         -- debug info
         -- string counts/cycles
         local c = hoop.resolution

@@ -2,29 +2,13 @@ local appState = require "appstate"
 if evaluator ~= nil then
     return
 end
--- alpha should be in [0..temp)
-function linearDecrease(temp, alpha)
-    return math.max(temp - alpha, 0)
-end
-
--- alpha should be in [0..1)
-function multiplicativeDecrease(temp, alpha)
-    return temp * alpha
-end
-
--- beta should be.... i'm not sure
--- nor do i know why it's called beta
-function slowDecrease(temp, beta)
-    return temp / (1 + beta * temp)
-end
-
 evaluator = {
     targetImageData = nil,
     currentImageData = nil,
     temperature = 0,
     currentError = 1,
-    errorHistory = {},
     tempDecreaseFunc = slowDecrease,
+    errorMap = {},
     stringCanvas = {}
 }
 local canvasPPU
@@ -46,6 +30,7 @@ function evaluator.load(targetImageData)
     canvasPPU = (2 * hoop.radius) / math.min(evaluator.stringCanvas:getDimensions())
     evaluator.currentImageData = evaluator.stringCanvas:newImageData()
     print(string.format("Canvas PPU: %.3f", canvasPPU))
+    evaluator.errorMap = {}
 end
 
 function evaluator.reset()
@@ -54,89 +39,128 @@ function evaluator.reset()
     -- evaluator.temperature = globals['initialTemp']
     -- evaluator.currentError = 1
 end
+local iter = 1
 
 function evaluator.update(delta)
-    if evaluator.temperature <= 0.00001 then
-        appState.setState('paused')
-        return
-    end
     if appState.getState() ~= 'running' then
         return
     end
     canvasPPU = (2 * hoop.radius) / math.min(evaluator.stringCanvas:getDimensions())
-    -- get a neighbor.
-    local old = hoop.stringState
-    hoop.stringState = hoop.stringState:neighbor(math.floor(
-        math.random(1, evaluator.temperature * globals['volatility'])))
-    -- generate our imagedata for it
-    love.graphics.setCanvas(evaluator.stringCanvas)
-    love.graphics.clear(0, 0, 0, 1)
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.circle('fill', evaluator.stringCanvas:getWidth() / 2, evaluator.stringCanvas:getHeight() / 2,
-        evaluator.stringCanvas:getWidth() / 2)
-
-    love.graphics.setLineWidth(globals['stringWidth'] * canvasPPU)
-    love.graphics.setColor(0, 0, 0, 1 - globals['shadeDetail'])
-    hoop.draw(evaluator.stringCanvas:getWidth() / 2, evaluator.stringCanvas:getHeight() / 2, canvasPPU,
-        evaluator.stringCanvas)
-
-    evaluator.currentImageData = evaluator.stringCanvas:newImageData()
-    -- reset anything we may have messed up.
-    love.graphics.setColor(1, 1, 1, 1)
-    love.graphics.setLineWidth(1)
-    love.graphics.setCanvas()
-    -- find the error of the neighbor, compare it to our current error, and decide if we
-    -- want to accept it
-    local newError = evaluator.getError(evaluator.currentImageData, evaluator.targetImageData)
-    local dE = newError - evaluator.currentError
-    local p = math.exp(-dE * 1000000 / evaluator.temperature)
-    if dE <= 0 or love.math.random() < p then
-        if dE > 0 then
-            print(string.format("accepted err+%.4g%%; %.4f%% chance of acceptance", dE * 100, p * 100))
+    for i = 1, #hoop.stringState.strings do
+        evaluator.errorMap[i] = evaluator.getErrorForLine(i)
+        if evaluator.errorMap[i] > globals['errorThreshold'] then
+            hoop.stringState.strings[i].active = false
+        else
+            -- print(evaluator.errorMap[i])
+            hoop.stringState.strings[i].active = true
         end
-        -- accept it
-        evaluator.currentError = newError
-    else
-        hoop.stringState = old
     end
-    -- decrease temperature, if it's time.
-    itersThisTemp = itersThisTemp + 1
-    if itersThisTemp >= globals['iterationsPerTemp'] then
-        evaluator.temperature = evaluator.tempDecreaseFunc(evaluator.temperature, 0.01)
-        itersThisTemp = 0
-    end
-
-    -- draw the current state to the string canvas.
-
+    -- for i = 10000, 10100 do
+    -- print(evaluator.errorMap[i])
+    -- end
+    appState.setState('paused')
 end
-
+function evaluator.onThresholdChanged(newValue)
+    if #evaluator.errorMap < 1 then
+        return
+    end
+    for i = 1, #hoop.stringState.strings do
+        if evaluator.errorMap[i] > newValue then
+            hoop.stringState.strings[i].active = false
+        else
+            hoop.stringState.strings[i].active = true
+        end
+    end
+end
 --- calculate the error ("heat") between targetImage and generatedImage, defined here as the
 --- sum of the differences in pixel brightness for every pixel in the images that's contained within
---- the hoop, normalized to ... something. possibly just the total number of pixels.
---- in the future we can use the # of strings as a factor as well, so we can use as little material as possible
-function evaluator.getError(currentImageData, targetImageData)
-    local totalError = 0
-    local w, h = targetImageData:getDimensions()
-    for i = 0, w - 1 do
-        for j = 0, h - 1 do
-            -- make sure we're within the hoop.
-            local xOff = i - w / 2
-            local yOff = j - h / 2
-            if math.sqrt(xOff * xOff + yOff * yOff) <= hoop.radius * canvasPPU then
-                -- only taking one return value is ok for grayscale since all components should be the same.
-                local t = targetImageData:getPixel(i, j)
-                local g = currentImageData:getPixel(i, j)
-                local err = g - t
-                -- if err < 0 then
-                --     -- pixel is too dark, which is worse than being too light.
-                --     err = math.sqrt(math.abs(err))
-                -- end
-                -- pixels closer to the center matter more
-                -- err = err *
-                --           (1 - math.pow(math.sqrt(xOff * xOff + yOff * yOff) / (globals['hoopRadius'] * canvasPPU), 10))
-                totalError = totalError + math.abs(err)
+-- --- the hoop, normalized to ... something. possibly just the total number of pixels.
+-- --- in the future we can use the # of strings as a factor as well, so we can use as little material as possible
+-- function evaluator.getError(currentImageData, targetImageData)
+--     local totalError = 0
+--     local w, h = targetImageData:getDimensions()
+--     for i = 0, w - 1 do
+--         for j = 0, h - 1 do
+--             -- make sure we're within the hoop.
+--             local xOff = i - w / 2
+--             local yOff = j - h / 2
+--             if math.sqrt(xOff * xOff + yOff * yOff) <= hoop.radius * canvasPPU then
+--                 -- only taking one return value is ok for grayscale since all components should be the same.
+--                 local t = targetImageData:getPixel(i, j)
+--                 local g = currentImageData:getPixel(i, j)
+--                 local err = g - t
+--                 -- if err < 0 then
+--                 --     -- pixel is too dark, which is worse than being too light.
+--                 --     err = math.sqrt(math.abs(err))
+--                 -- end
+--                 -- pixels closer to the center matter more
+--                 -- err = err *
+--                 --           (1 - math.pow(math.sqrt(xOff * xOff + yOff * yOff) / (globals['hoopRadius'] * canvasPPU), 10))
+--                 totalError = totalError + math.abs(err)
+--             end
+--         end
+--     end
+--     return totalError / (w * h)
+-- end
+
+-- return average error value for all pixels in the evaluator
+-- that are touched with the line with the given id. lol.
+-- though i do wonder if wu's algorithm would give a more nuanced version
+-- (by way of being antialiased)
+-- maybe consider gamma correction, queen.
+function evaluator.getErrorForLine(id)
+    local w, h = evaluator.targetImageData:getDimensions()
+    -- hey kids i heared you liked line drawing algorithms :D
+    local x1, y1, x2, y2 = hoop.stringState.strings[id]:getEndpoints(w*canvasPPU/2, h*canvasPPU/2, hoop.nailRadius, 1, evaluator.stringCanvas)
+    x1 = math.floor(x1)
+    x2=math.floor(x2)
+    y1=math.floor(y1)
+    y2=math.floor(y2)
+    local dx = math.abs(x2 - x1)
+    local sx = x1 < x2 and 1 or -1
+    local dy = -math.abs(y2 - y1)
+    local sy = y1 < y2 and 1 or -1
+    local err = dx + dy
+
+
+    -- length of the line we're looking at, in evaluator pixels
+    local len = 0
+    -- total error we've seen for this line so far
+    local linerr = 0
+
+    while (true) do
+        -- x0 and y0 are the current point we're looking at
+        if math.sqrt(x1 * x1 + y1 * y1) <= hoop.radius * canvasPPU
+        and x1 > 0 and x1 < w and y1 > 0 and y1 < h then
+            len = len + 1
+            -- ... it can't be that simple.
+            -- so really we're just returning how dark the image is at that line???
+            -- no wonder this program sucks lmao
+            linerr = linerr + (1 - evaluator.targetImageData:getPixel(x1, y1))
+        end
+
+        if x1 == x2 and y1 == y2 then
+            break
+        end
+        local e2 = 2 * err
+        if e2 >= dy then
+            if x1 == x2 then
+                break
             end
+            err = err + dy
+            x1 = x1 + sx
+        end
+        if e2 <= dx then
+            if y1 == y2 then
+                break
+            end
+            err = err + dx
+            y1 = y1 + sy
         end
     end
-    return totalError / (w * h)
+    if len > 0 then
+        return (linerr / len) * (linerr/len)
+    else
+        return 1
+    end
 end
