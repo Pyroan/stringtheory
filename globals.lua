@@ -12,14 +12,16 @@ globals = {
     -- evaluator settings
     imageName = "data/monalisa.bmp",
     evaluatorResolution = 500, -- side length of grid used by evaluator function
-    stringWidth = 0.5, -- diameter of the string in world units. functionally limited by evaluator resolution.
+    stringWidth = 1, -- diameter of the string in world units. functionally limited by evaluator resolution.
 
-    -- iterationsPerTemp = 100, -- number of new states to check before decreasing the temperature
-    -- initialTemp = 1.0,
-    -- volatility = 2, -- max number of strings that can be changed per iteration * `temperature`
-    -- shadeDetail = 0.8, -- 1-the opacity used for the wires in the evaluator. (by default 0.5 seems to work best, creates some nasty artifacts when set too high.)
+    errorThreshold = 0.2, -- maximum error a string can have before we deactivate it.
 
-    errorThreshold=0.20; -- maximum error a string can have before we deactivate it.
+    -- basically a measure of how likely a line is to get toggled based on its fitness
+    -- a value of 0 means that if a line is over the threshold it's off, and a line under the threshold is on,
+    -- a value of 1 means that even values way way far from the threshold could still be toggled.
+    -- unforch this is is somewhat nondeterministic out of necessity.
+    -- todo actually implement this
+    fuzziness = 0.0,
 
     totalEvaluationTime = 0,
     justSaved = false -- true if nothing has changed since the last time we saved the state.

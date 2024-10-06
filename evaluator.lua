@@ -46,18 +46,23 @@ function evaluator.update(delta)
         return
     end
     canvasPPU = (2 * hoop.radius) / math.min(evaluator.stringCanvas:getDimensions())
+    -- evaluate every string
     for i = 1, #hoop.stringState.strings do
-        evaluator.errorMap[i] = evaluator.getErrorForLine(i)
+        local err = evaluator.getErrorForLine(i)
+        evaluator.errorMap[i] = err
+    end
+    -- apply error values (i'd like to normalize this distribution eventually to make the threshold values more useful but)
+    for i = 1, #hoop.stringState.strings do
         if evaluator.errorMap[i] > globals['errorThreshold'] then
             hoop.stringState.strings[i].active = false
         else
-            -- print(evaluator.errorMap[i])
             hoop.stringState.strings[i].active = true
         end
     end
     -- for i = 10000, 10100 do
     -- print(evaluator.errorMap[i])
     -- end
+    -- errorhist = Histogram:new("Line Error", evaluator.errorMap)
     appState.setState('paused')
 end
 function evaluator.onThresholdChanged(newValue)
@@ -111,17 +116,17 @@ end
 function evaluator.getErrorForLine(id)
     local w, h = evaluator.targetImageData:getDimensions()
     -- hey kids i heared you liked line drawing algorithms :D
-    local x1, y1, x2, y2 = hoop.stringState.strings[id]:getEndpoints(w*canvasPPU/2, h*canvasPPU/2, hoop.nailRadius, 1, evaluator.stringCanvas)
+    local x1, y1, x2, y2 = hoop.stringState.strings[id]:getEndpoints(w * canvasPPU / 2, h * canvasPPU / 2,
+        hoop.nailRadius, canvasPPU, evaluator.stringCanvas)
     x1 = math.floor(x1)
-    x2=math.floor(x2)
-    y1=math.floor(y1)
-    y2=math.floor(y2)
+    x2 = math.floor(x2)
+    y1 = math.floor(y1)
+    y2 = math.floor(y2)
     local dx = math.abs(x2 - x1)
     local sx = x1 < x2 and 1 or -1
     local dy = -math.abs(y2 - y1)
     local sy = y1 < y2 and 1 or -1
     local err = dx + dy
-
 
     -- length of the line we're looking at, in evaluator pixels
     local len = 0
@@ -130,13 +135,10 @@ function evaluator.getErrorForLine(id)
 
     while (true) do
         -- x0 and y0 are the current point we're looking at
-        if math.sqrt(x1 * x1 + y1 * y1) <= hoop.radius * canvasPPU
-        and x1 > 0 and x1 < w and y1 > 0 and y1 < h then
+        if math.sqrt(x1 * x1 + y1 * y1) <= hoop.radius * canvasPPU and x1 > 0 and x1 < w and y1 > 0 and y1 < h then
             len = len + 1
             -- ... it can't be that simple.
-            -- so really we're just returning how dark the image is at that line???
-            -- no wonder this program sucks lmao
-            linerr = linerr + (1 - evaluator.targetImageData:getPixel(x1, y1))
+            linerr = linerr + ((1 - evaluator.targetImageData:getPixel(x1, y1))) -- * imgrad:getPixel(x1, y1))
         end
 
         if x1 == x2 and y1 == y2 then
@@ -159,7 +161,7 @@ function evaluator.getErrorForLine(id)
         end
     end
     if len > 0 then
-        return (linerr / len) * (linerr/len)
+        return (linerr / len) * (linerr / len)
     else
         return 1
     end

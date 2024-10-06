@@ -3,6 +3,7 @@ local state = require "appstate"
 require "evaluator"
 require "globals"
 require "hoop"
+require "histogram"
 require "imageprocessing"
 require "ui"
 require "util"
@@ -22,6 +23,7 @@ function love.load()
     hoop.load(globals['activeDensity'])
 
     initImage()
+    errorhist = Histogram:new("Empty", {})
 end
 
 -- i don't know where to put this yet.
@@ -43,6 +45,8 @@ function initImage()
     -- end
     imdata = scaleImageData(imdata, globals['evaluatorResolution'], globals['evaluatorResolution'])
     scaledIm = love.graphics.newImage(imdata)
+    imgrad = sobel(imdata)
+    gradient = love.graphics.newImage(imgrad)
     evaluator.load(imdata:clone())
 end
 
@@ -74,7 +78,7 @@ function love.draw()
     love.graphics.draw(im, imX, imY, 0, imScaleFactor, imScaleFactor)
 
     -- draw the main preview of the hoop
-    love.graphics.setColor(0, 0, 0, 0.4)
+    love.graphics.setColor(0, 0, 0, 0.1)
     hoop.draw(globals['xOffset'] + love.graphics.getWidth() / 2, globals['yOffset'] + love.graphics.getHeight() / 2,
         globals['ppu'])
     love.graphics.setColor(1, 1, 1, 1)
@@ -83,5 +87,7 @@ function love.draw()
 
     -- reset color 
     love.graphics.setColor(1, 1, 1, 1)
+
+    -- errorhist:draw(100,100,320,200)
 end
 

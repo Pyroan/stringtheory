@@ -53,12 +53,58 @@ function toGrayscale(imageData)
     return id
 end
 
---- returns the gradient of imageData using a sobel filter.
+--- returns the normalized gradient of imageData using a sobel filter.
 --- if i gotta do more convolving later this is where i'm gonna have to do it :\
+--- todo denoising, maybe.
 function sobel(imageData)
-    local kernel = {{
-        --TODO preloading webpages doesn't work lmao
-    }}
+    local xkernel = {{1, 0, -1}, {2, 0, -2}, {1, 0, -1}}
+    local ykernel = {{1, 2, 1}, {0, 0, 0}, {-1, -2, -1}}
+    local w, h = imageData:getDimensions()
+    local tmpgrad = {}
+    local gradient = love.image.newImageData(w, h)
+    local maxvalue = 0
+    local minvalue = 1
+    for i = 0, w - 1 do
+        tmpgrad[i] = {}
+        for j = 0, h - 1 do
+            -- apply le kernel <3
+            local vx = 0
+            local vy = 0
+            for k = 1, 3 do
+                for l = 1, 3 do
+                    local a = i + k - 2
+                    local b = j + l - 2
+                    a = math.max(math.min(a, w - 1), 0)
+                    b = math.max(math.min(b, h - 1), 0)
+                    local p = imageData:getPixel(a, b)
+                    vx = vx + (p * xkernel[k][l])
+                    vy = vy + (p * ykernel[k][l])
+                end
+            end
+            local v = math.sqrt(vx*vx + vy*vy)
+            if v > maxvalue then
+                maxvalue = v
+            end
+            if v < minvalue then
+                minvalue = v
+            end
+            tmpgrad[i][j] = v
+        end
+    end
+    -- normalize the gradient
+    local newmax = 0
+    local newmin = 1
+    for i = 0, w - 1 do
+        for j = 0, h - 1 do
+            local v = tmpgrad[i][j]
+            v =  (v - minvalue) / (maxvalue - minvalue)
+            gradient:setPixel(i,j,v,v,v)
+            if v>newmax then newmax = v end
+            if v<newmin then newmin = v end
+        end
+    end
+    print("max="..newmax..", min="..newmin)
+    return gradient
 end
 
 --- return the grayscale value (0..1 inclusive)

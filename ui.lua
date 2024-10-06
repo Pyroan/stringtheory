@@ -230,6 +230,7 @@ function ui.update(delta)
             nukeui:layoutRow('dynamic', w, 1)
             nukeui:image(scaledIm)
             nukeui:layoutRow('dynamic', w, 1)
+            nukeui:image(gradient)
             nukeui:image(love.graphics.newImage(evaluator.currentImageData))
             nukeui:groupEnd()
         end
