@@ -54,7 +54,7 @@ function hoop.onNailResolutionChanged(newValue)
 end
 
 function hoop.onNailRadiusChanged(newValue)
-    error("Not yet implemented!")
+    hoop.nailRadius = newValue
 end
 
 --- Draw the hoop

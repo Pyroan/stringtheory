@@ -5,14 +5,11 @@ end
 evaluator = {
     targetImageData = nil,
     currentImageData = nil,
-    temperature = 0,
     currentError = 1,
-    tempDecreaseFunc = slowDecrease,
     errorMap = {},
     stringCanvas = {}
 }
 local canvasPPU
-local itersThisTemp = 0
 
 -- might not need to have its own state for this stuff tbh.
 -- that or it'll handle all the image/canvas generation stuff currently in main
@@ -77,36 +74,6 @@ function evaluator.onThresholdChanged(newValue)
         end
     end
 end
---- calculate the error ("heat") between targetImage and generatedImage, defined here as the
---- sum of the differences in pixel brightness for every pixel in the images that's contained within
--- --- the hoop, normalized to ... something. possibly just the total number of pixels.
--- --- in the future we can use the # of strings as a factor as well, so we can use as little material as possible
--- function evaluator.getError(currentImageData, targetImageData)
---     local totalError = 0
---     local w, h = targetImageData:getDimensions()
---     for i = 0, w - 1 do
---         for j = 0, h - 1 do
---             -- make sure we're within the hoop.
---             local xOff = i - w / 2
---             local yOff = j - h / 2
---             if math.sqrt(xOff * xOff + yOff * yOff) <= hoop.radius * canvasPPU then
---                 -- only taking one return value is ok for grayscale since all components should be the same.
---                 local t = targetImageData:getPixel(i, j)
---                 local g = currentImageData:getPixel(i, j)
---                 local err = g - t
---                 -- if err < 0 then
---                 --     -- pixel is too dark, which is worse than being too light.
---                 --     err = math.sqrt(math.abs(err))
---                 -- end
---                 -- pixels closer to the center matter more
---                 -- err = err *
---                 --           (1 - math.pow(math.sqrt(xOff * xOff + yOff * yOff) / (globals['hoopRadius'] * canvasPPU), 10))
---                 totalError = totalError + math.abs(err)
---             end
---         end
---     end
---     return totalError / (w * h)
--- end
 
 -- return average error value for all pixels in the evaluator
 -- that are touched with the line with the given id. lol.
@@ -138,7 +105,7 @@ function evaluator.getErrorForLine(id)
         if math.sqrt(x1 * x1 + y1 * y1) <= hoop.radius * canvasPPU and x1 > 0 and x1 < w and y1 > 0 and y1 < h then
             len = len + 1
             -- ... it can't be that simple.
-            linerr = linerr + ((1 - evaluator.targetImageData:getPixel(x1, y1))) -- * imgrad:getPixel(x1, y1))
+            linerr = linerr + ((1 - evaluator.targetImageData:getPixel(x1, y1)) * imgrad:getPixel(x1, y1))
         end
 
         if x1 == x2 and y1 == y2 then

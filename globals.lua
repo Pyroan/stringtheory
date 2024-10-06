@@ -9,6 +9,11 @@ globals = {
     yOffset = 0,
     imageTransparency = 0.0,
 
+    -- Hoop Settings
+    maxNails = 360,
+    maxNailRadius = 100,
+    maxHoopRadius = 500,
+
     -- evaluator settings
     imageName = "data/monalisa.bmp",
     evaluatorResolution = 500, -- side length of grid used by evaluator function
@@ -24,5 +29,10 @@ globals = {
     fuzziness = 0.0,
 
     totalEvaluationTime = 0,
-    justSaved = false -- true if nothing has changed since the last time we saved the state.
+    justSaved = false, -- true if nothing has changed since the last time we saved the state.
+
+    -- UI formatting constants because ui.lua is a mess.
+    ui = {
+        buttonHeight = 20
+    }
 }
