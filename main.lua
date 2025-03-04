@@ -8,17 +8,19 @@ require "imageprocessing"
 require "ui"
 require "util"
 
-function love.load()
+function love.load(args)
     love.window.setMode(1600, 900, {
         resizable = true
     })
-    love.window.setTitle("Vi's String Theory")
     love.graphics.setDefaultFilter("nearest")
     love.graphics.setBackgroundColor(1, 1, 1, 1)
 
     ui.load()
     hoop.load(globals['activeDensity'])
 
+    if #args > 0 then
+        globals.imageName = args[1]
+    end
     initImage()
     -- errorhist = Histogram:new("Empty", {})
 end

@@ -33,8 +33,6 @@ end
 function evaluator.reset()
 
     evaluator.load(evaluator.targetImageData)
-    -- evaluator.temperature = globals['initialTemp']
-    -- evaluator.currentError = 1
 end
 local iter = 1
 
@@ -66,6 +64,7 @@ function evaluator.onThresholdChanged(newValue)
     if #evaluator.errorMap < 1 then
         return
     end
+    globals['errorThreshold'] = newValue
     for i = 1, #hoop.stringState.strings do
         if evaluator.errorMap[i] > newValue then
             hoop.stringState.strings[i].active = false
@@ -105,7 +104,7 @@ function evaluator.getErrorForLine(id)
         if math.sqrt(x1 * x1 + y1 * y1) <= hoop.radius * canvasPPU and x1 > 0 and x1 < w and y1 > 0 and y1 < h then
             len = len + 1
             -- ... it can't be that simple.
-            linerr = linerr + ((1 - evaluator.targetImageData:getPixel(x1, y1)) * imgrad:getPixel(x1, y1))
+            linerr = linerr + (evaluator.targetImageData:getPixel(x1, y1)) -- * imgrad:getPixel(x1, y1)
         end
 
         if x1 == x2 and y1 == y2 then
