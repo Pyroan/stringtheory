@@ -59,14 +59,13 @@ end
 
 --- Draw the hoop
 --- will draw to a canvas, if it's provided.
----@param nailRadius integer
 ---@param canvas love.graphics.Canvas
-function hoop.draw(x, y, ppu, canvas)
+function hoop.draw(x, y, canvas)
     if canvas then
         love.graphics.setCanvas(canvas)
     end
-    hoop.drawNails(x, y, ppu, canvas)
-    hoop.stringCount = hoop.stringState:draw(x, y, hoop.nailRadius, ppu, canvas)
+    hoop.drawNails(x, y, canvas)
+    hoop.stringCount = hoop.stringState:draw(x, y, hoop.nailRadius, canvas)
     love.graphics.setCanvas()
 end
 
@@ -85,12 +84,14 @@ function hoop.loadNails(angle)
     return nails
 end
 
-function hoop.drawNails(x, y, ppu, canvas)
+function hoop.drawNails(x, y, canvas)
     oldColor = {love.graphics.getColor()}
     love.graphics.setColor(0, 0, 0, 1)
     for i = 1, #hoop.nails do
-        local x1, y1 = worldToScreenSpace(hoop.nails[i].x, hoop.nails[i].y, ppu, canvas)
-        love.graphics.circle("fill", x1 + x, y1 + y, hoop.nailRadius / ppu)
+        local x1, y1 = love.graphics.transformPoint(hoop.nails[i].x, hoop.nails[i].y)
+        --- For some reason the nails' radius isn't getting scaled properly and
+        --- I can't figure out why so i'm just scaling it manually here.
+        love.graphics.circle("fill", x1 + x, y1 + y, hoop.nailRadius * globals.scale_factor)
         -- love.graphics.print(i, nails[i].x, nails[i].y)
     end
     love.graphics.setColor(oldColor)

@@ -49,21 +49,24 @@ function love.update(delta)
 end
 
 function love.draw()
-    -- uncomment to force hoop to render as big as possible
-    -- globals['ppu'] = (2 * globals['hoopRadius']) / math.min(love.graphics.getDimensions())
+    love.graphics.push()
+    love.graphics.translate(globals.xOffset, globals.yOffset)
+    love.graphics.scale(globals.scale_factor)
+
     love.graphics.setColor(1, 1, 1, globals['imageTransparency'])
     -- align/scale image so that it's the same size/location as the hoop.
     local imScaleFactor = 2 * hoop.radius / im:getWidth()
-    imScaleFactor = imScaleFactor / globals['ppu']
-    local imX = globals['xOffset'] + (love.graphics.getWidth() - imScaleFactor * im:getWidth()) / 2
-    local imY = globals['yOffset'] + (love.graphics.getHeight() - imScaleFactor * im:getHeight()) / 2
+    imScaleFactor = imScaleFactor
+    local imX = (love.graphics.getWidth() - imScaleFactor * im:getWidth()) / 2
+    local imY = (love.graphics.getHeight() - imScaleFactor * im:getHeight()) / 2
     love.graphics.draw(im, imX, imY, 0, imScaleFactor, imScaleFactor)
 
     -- draw the main preview of the hoop
     love.graphics.setColor(0, 0, 0, 0.1)
-    hoop.draw(globals['xOffset'] + love.graphics.getWidth() / 2, globals['yOffset'] + love.graphics.getHeight() / 2,
-        globals['ppu'])
+    hoop.draw(love.graphics.getWidth() / 2, love.graphics.getHeight() / 2)
     love.graphics.setColor(1, 1, 1, 1)
+
+    love.graphics.pop()
 
     ui.draw()
 
@@ -72,4 +75,3 @@ function love.draw()
 
     -- errorhist:draw(100,100,320,200)
 end
-

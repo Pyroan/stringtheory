@@ -4,7 +4,7 @@ globals = {
     doIsolateStep = false,
     isolateStep = 1,
 
-    ppu = 1,
+    scale_factor = 1,
     xOffset = 0,
     yOffset = 0,
     imageTransparency = 0.0,

@@ -22,17 +22,16 @@ end
 --- the specific line is based on `self.type`
 ---@param nailRadius integer "the radius of the nail (in pixels)"
 ---@return boolean "`true` if the string was actually drawn, `false` otherwise"
-function Wire:draw(x, y, nailRadius, ppu, canvas)
+function Wire:draw(x, y, nailRadius, canvas)
     if (nailRadius <= 0 and self.type ~= 1) or not self.active then
         return false
     end
-    local x1, y1, x2, y2 = self:getEndpoints(x,y,nailRadius,ppu,canvas)
+    local x1, y1, x2, y2 = self:getEndpoints(x, y, nailRadius, canvas)
     love.graphics.line(x1, y1, x2, y2)
-    -- end
     return true
 end
 
-function Wire:getEndpoints(x,y,nailRadius,ppu,canvas)
+function Wire:getEndpoints(x, y, nailRadius, canvas)
     local source = self.sourceNode
     local dest = self.destNode
     local x1, x2, y1, y2
@@ -73,11 +72,11 @@ function Wire:getEndpoints(x,y,nailRadius,ppu,canvas)
         y2 = yDelta - yOffset + source.y
     end
 
-    x1, y1 = worldToScreenSpace(x1, y1, ppu, canvas)
-    x2, y2 = worldToScreenSpace(x2, y2, ppu, canvas)
+    x1, y1 = love.graphics.transformPoint(x1, y1)
+    x2, y2 = love.graphics.transformPoint(x2, y2)
     x1 = x1 + x
     y1 = y1 + y
     x2 = x2 + x
     y2 = y2 + y
-    return x1,y1,x2,y2
+    return x1, y1, x2, y2
 end

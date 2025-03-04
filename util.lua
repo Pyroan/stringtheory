@@ -32,21 +32,6 @@ function HSL(h, s, l, a)
     return r + m, g + m, b + m, a
 end
 
-function worldToScreenSpace(x, y, ppu, canvas)
-    ppu = ppu or 1
-    local screenWidth, screenHeight
-    if canvas == nil then
-        screenWidth, screenHeight = love.graphics.getDimensions()
-    else
-        screenWidth, screenHeight = canvas:getDimensions()
-    end
-    local newX = x - math.floor((screenWidth / 2))
-    newX = x / ppu
-    local newY = y - math.floor((screenHeight / 2))
-    newY = y / ppu
-    return newX, newY
-end
-
 -- https://gist.github.com/Uradamus/10323382?permalink_comment_id=2754684#gistcomment-2754684
 function shuffle(tbl)
     for i = #tbl, 2, -1 do
