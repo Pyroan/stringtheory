@@ -126,8 +126,8 @@ function ui.update(delta)
                     math.floor(hoop.resolution / 2), 1, 1)
             end
             nukeui:layoutRow('dynamic', 25, 1)
-            nukeui:label("Image opacity: " .. math.floor(globals['imageTransparency'] * 100) .. "%")
-            globals['imageTransparency'] = nukeui:slider(0, globals['imageTransparency'], 1, 0.01)
+            nukeui:label("Image opacity: " .. math.floor(globals.imageOpacity * 100) .. "%")
+            globals.imageOpacity = nukeui:slider(0, globals.imageOpacity, 1, 0.01)
         end
         nukeui:groupEnd()
 
@@ -241,7 +241,7 @@ function love.wheelmoved(x, y)
         return -- event consumed
     end
     -- zoom in/out on preview.
-    globals.scale_factor = globals.scale_factor + y * 0.1
+    globals.scaleFactor = globals.scaleFactor + y * 0.1
     -- TODO realign offset to keep the area under the mouse the same...
 
 end

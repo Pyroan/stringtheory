@@ -88,11 +88,10 @@ function hoop.drawNails(x, y, canvas)
     oldColor = {love.graphics.getColor()}
     love.graphics.setColor(0, 0, 0, 1)
     for i = 1, #hoop.nails do
-        local x1, y1 = love.graphics.transformPoint(hoop.nails[i].x, hoop.nails[i].y)
+        local x1, y1 = hoop.nails[i].x, hoop.nails[i].y
         --- For some reason the nails' radius isn't getting scaled properly and
         --- I can't figure out why so i'm just scaling it manually here.
-        love.graphics.circle("fill", x1 + x, y1 + y, hoop.nailRadius * globals.scale_factor)
-        -- love.graphics.print(i, nails[i].x, nails[i].y)
+        love.graphics.circle("fill", x1 + x, y1 + y, hoop.nailRadius)
     end
     love.graphics.setColor(oldColor)
 end

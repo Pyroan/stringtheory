@@ -72,8 +72,6 @@ function Wire:getEndpoints(x, y, nailRadius, canvas)
         y2 = yDelta - yOffset + source.y
     end
 
-    x1, y1 = love.graphics.transformPoint(x1, y1)
-    x2, y2 = love.graphics.transformPoint(x2, y2)
     x1 = x1 + x
     y1 = y1 + y
     x2 = x2 + x

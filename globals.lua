@@ -4,10 +4,10 @@ globals = {
     doIsolateStep = false,
     isolateStep = 1,
 
-    scale_factor = 1,
+    scaleFactor = 1,
     xOffset = 0,
     yOffset = 0,
-    imageTransparency = 0.0,
+    imageOpacity = 0.1,
 
     -- Hoop Settings
     maxNails = 360,
